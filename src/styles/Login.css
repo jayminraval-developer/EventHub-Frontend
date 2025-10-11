@@ -1,0 +1,183 @@
+/* 🌙 Dark Background + EventHub Blue Theme */
+body,
+html {
+  height: 100%;
+  margin: 0;
+  font-family: "Poppins", sans-serif;
+  background: linear-gradient(to bottom, #000814, #001d3d, #000814);
+  color: #fff;
+}
+
+/* ⚙️ Main Container */
+.login-container {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 40px 15px;
+  position: relative;
+  overflow: hidden;
+}
+
+/* 💧 Glass 3D Box */
+.login-box {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(12px);
+  border-radius: 18px;
+  box-shadow: 0 4px 30px rgba(0, 180, 216, 0.2);
+  padding: 35px 28px;
+  width: 100%;
+  max-width: 380px;
+  text-align: center;
+  animation: fadeIn 0.8s ease;
+  transform: translateY(0);
+  transition: all 0.3s ease;
+  margin-bottom: 100px;
+}
+
+.login-box:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 6px 40px rgba(0, 180, 216, 0.35);
+}
+
+/* ✨ Headings */
+.login-box h3 {
+  color: #00b4d8;
+  font-size: 1.7rem;
+  font-weight: 600;
+  margin-bottom: 5px;
+}
+
+.login-box p {
+  font-size: 0.9rem;
+  color: #cbd5e1;
+  margin-bottom: 25px;
+}
+
+.login-box span {
+  color: #00b4d8;
+  font-weight: 500;
+}
+
+/* 📋 Form */
+form {
+  display: flex;
+  flex-direction: column;
+  text-align: left;
+}
+
+form label {
+  color: #00b4d8;
+  font-size: 0.9rem;
+  margin-bottom: 5px;
+  margin-left: 5px;
+}
+
+form input {
+  background: rgba(255, 255, 255, 0.1);
+  border: none;
+  outline: none;
+  padding: 10px 12px;
+  border-radius: 10px;
+  color: #fff;
+  font-size: 0.9rem;
+  margin-bottom: 18px;
+  transition: all 0.3s ease;
+}
+
+form input:focus {
+  background: rgba(255, 255, 255, 0.2);
+  box-shadow: 0 0 8px #00b4d8;
+}
+
+/* 🔘 Button */
+.login-btn {
+  background: linear-gradient(90deg, #00b4d8, #0077b6);
+  color: #fff;
+  border: none;
+  padding: 10px;
+  border-radius: 10px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.login-btn:hover {
+  background: linear-gradient(90deg, #0077b6, #00b4d8);
+  box-shadow: 0 0 12px #00b4d8;
+}
+
+/* 🔗 Sign Up Text */
+.signup {
+  margin-top: 18px;
+  font-size: 0.9rem;
+  color: #94a3b8;
+}
+
+.signup a {
+  color: #00b4d8;
+  text-decoration: none;
+}
+
+.signup a:hover {
+  text-decoration: underline;
+}
+
+/* ⚡ Footer */
+.footer {
+  position: absolute;
+  bottom: 10px;
+  text-align: center;
+  width: 100%;
+  font-size: 0.8rem;
+  color: #64748b;
+}
+
+/* 📱 Responsiveness */
+@media (max-width: 768px) {
+  .login-box {
+    max-width: 90%;
+    padding: 30px 20px;
+  }
+
+  .navbar {
+    font-size: 1.1rem;
+    padding: 15px 20px;
+  }
+
+  .footer {
+    font-size: 0.75rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .login-box h3 {
+    font-size: 1.4rem;
+  }
+
+  .login-box {
+    padding: 25px 18px;
+  }
+
+  form input {
+    font-size: 0.85rem;
+  }
+
+  .login-btn {
+    font-size: 0.9rem;
+  }
+}
+
+/* ✨ Fade-in Animation */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

@@ -1,0 +1,206 @@
+/* src/styles/Home.css */
+
+:root {
+  --primary-color: #00baff;
+  --bg-dark: #111;
+  --card-bg: #a29ead;
+  --text-light: #ffa200;
+  --text-dark: #222;
+  --accent: #1a1515;
+}
+
+.home-container {
+  font-family: 'Segoe UI', sans-serif;
+  overflow-x: hidden;
+}
+
+/* Hero Section */
+.hero-section {
+  background: linear-gradient(to bottom right, rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.8)), url('/your-background.jpg') no-repeat center center/cover;
+  padding: 100px 20px;
+  min-height: 90vh;
+  animation: fadeIn 1s ease-in;
+}
+
+.hero-title {
+  font-size: 3rem;
+  font-weight: 700;
+  animation: slideUp 1s ease;
+}
+
+.hero-title span {
+  color: var(--primary-color);
+}
+
+.hero-subtext {
+  font-size: 1.2rem;
+    in: 15px 0 30px;
+  color: var(--text-light);
+}
+
+.search-box {
+  position: relative;
+  max-width: 600px;
+  width: 100%;
+  margin: auto;
+
+}
+
+.search-input {
+  width: 100%;
+  padding: 14px 20px;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  font-size: 1rem;
+  transition: box-shadow 0.3s;
+  background-color: transparent;
+
+}
+
+.search-input:focus {
+  outline: none;
+  box-shadow: 0 0 10px var(--primary-color);
+}
+
+.location-btn {
+  position: absolute;
+  right: 8px;
+  top: 50%;
+  transform: translateY(-50%);
+  background-color: #121719;
+  color: white;
+  padding: 8px 12px;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  cursor: pointer;
+  font-weight: 500;
+  transition: background-color 0.3s;
+}
+
+.location-btn:hover {
+  background-color: #093b4e;
+}
+
+.app-buttons p {
+  margin: 20px 0 10px;
+  font-size: 1rem;
+  color: var(--text-light);
+}
+
+.store-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background-color: #000;
+  color: white;
+  padding: 10px 18px;
+  border-radius: 8px;
+  text-decoration: none;
+  font-weight: 500;
+  transition: transform 0.3s, background-color 0.3s;
+}
+
+.store-btn:hover {
+  background-color: #111;
+  transform: scale(1.05);
+}
+
+/* Cities Section */
+.cities-section {
+  padding: 60px 20px;
+  background-color: var(--accent);
+}
+
+.cities-section h2 {
+  font-size: 2rem;
+  margin-bottom: 40px;
+  color: var(--text-dark);
+}
+
+.cities-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: 20px;
+  max-width: 1000px;
+  margin: auto;
+}
+
+.city-card {
+  background-color: var(--card-bg);
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 4px 12px rgba(47, 2, 2, 0.05);
+  transition: transform 0.3s, background-color 0.3s;
+  cursor: pointer;
+  animation: fadeInUp 0.5s ease both;
+}
+
+.city-card:hover {
+  transform: translateY(-5px);
+  background-color: #e9f9ff;
+}
+
+.city-icon {
+  font-size: 1.8rem;
+  color: var(--primary-color);
+}
+
+.city-card h5 {
+  margin-top: 10px;
+  font-weight: 600;
+  color: var(--text-dark);
+}
+
+.city-card p {
+  margin: 0;
+  color: #777;
+}
+
+/* Animations */
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes slideUp {
+  from { transform: translateY(20px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
+
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .hero-title {
+    font-size: 2.3rem;
+  }
+
+  .hero-section {
+    padding: 70px 15px;
+  }
+
+  .search-input {
+    padding: 12px 16px;
+    font-size: 0.95rem;
+  }
+
+  .location-btn {
+    padding: 6px 10px;
+  }
+}
+
+@media (max-width: 480px) {
+  .cities-section h2 {
+    font-size: 1.5rem;
+  }
+
+  .store-btn {
+    padding: 8px 14px;
+    font-size: 0.9rem;
+  }
+}
