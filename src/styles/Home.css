@@ -1,5 +1,4 @@
 /* src/styles/Home.css */
-
 :root {
   --primary-color: #00baff;
   --bg-dark: #111;
@@ -10,21 +9,41 @@
 }
 
 .home-container {
-  font-family: 'Segoe UI', sans-serif;
+  font-family: "Segoe UI", sans-serif;
   overflow-x: hidden;
 }
 
 /* Hero Section */
 .hero-section {
-  background: linear-gradient(to bottom right, rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.8)), url('/your-background.jpg') no-repeat center center/cover;
-  padding: 100px 20px;
-  min-height: 90vh;
+  position: relative;
+  height: 100vh;
+  background-size: cover;
+  background-position: center;
+  transition: background-image 1s ease-in-out;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.hero-overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.65);
+  z-index: 1;
+}
+
+.hero-content {
+  position: relative;
+  z-index: 2;
+  text-align: center;
+  padding: 20px;
   animation: fadeIn 1s ease-in;
 }
 
 .hero-title {
   font-size: 3rem;
   font-weight: 700;
+  color: #fff;
   animation: slideUp 1s ease;
 }
 
@@ -34,37 +53,39 @@
 
 .hero-subtext {
   font-size: 1.2rem;
-    in: 15px 0 30px;
+  margin: 15px 0 30px;
   color: var(--text-light);
 }
 
+/* Search Box */
 .search-box {
   position: relative;
   max-width: 600px;
   width: 100%;
-  margin: auto;
-
+  margin: 0 auto;
 }
 
 .search-input {
   width: 100%;
-  padding: 14px 20px;
+  padding: 14px 50px 14px 20px;
   border-radius: 8px;
   border: 1px solid #ccc;
   font-size: 1rem;
-  transition: box-shadow 0.3s;
-  background-color: transparent;
-
+  background-color: rgba(255, 255, 255, 0.1);
+  color: white;
+  backdrop-filter: blur(10px);
+  transition: all 0.3s ease;
 }
 
 .search-input:focus {
   outline: none;
+  border-color: var(--primary-color);
   box-shadow: 0 0 10px var(--primary-color);
 }
 
 .location-btn {
   position: absolute;
-  right: 8px;
+  right: 50px;
   top: 50%;
   transform: translateY(-50%);
   background-color: #121719;
@@ -83,6 +104,25 @@
   background-color: #093b4e;
 }
 
+.search-btn {
+  position: absolute;
+  right: 8px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: var(--primary-color);
+  color: white;
+  border: none;
+  border-radius: 50%;
+  padding: 10px;
+  cursor: pointer;
+  transition: transform 0.3s;
+}
+
+.search-btn:hover {
+  transform: scale(1.1);
+}
+
+/* App Buttons */
 .app-buttons p {
   margin: 20px 0 10px;
   font-size: 1rem;
@@ -116,7 +156,7 @@
 .cities-section h2 {
   font-size: 2rem;
   margin-bottom: 40px;
-  color: var(--text-dark);
+  color: var(--text-light);
 }
 
 .cities-grid {
@@ -181,20 +221,33 @@
   }
 
   .hero-section {
-    padding: 70px 15px;
+    height: 80vh;
   }
 
   .search-input {
-    padding: 12px 16px;
+    padding: 12px 45px 12px 16px;
     font-size: 0.95rem;
   }
 
   .location-btn {
+    right: 45px;
     padding: 6px 10px;
+  }
+
+  .search-btn {
+    padding: 8px;
   }
 }
 
 @media (max-width: 480px) {
+  .hero-title {
+    font-size: 1.8rem;
+  }
+
+  .hero-subtext {
+    font-size: 1rem;
+  }
+
   .cities-section h2 {
     font-size: 1.5rem;
   }
