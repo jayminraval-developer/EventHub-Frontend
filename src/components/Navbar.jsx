@@ -115,10 +115,14 @@ function Navbar() {
     <nav className="custom-navbar" aria-label="Primary navigation">
       {/* Logo */}
       <div className="navbar-logo">
-        <h2>EventHub</h2>
+        <Link
+          to="/"
+          onClick={() => handleLinkClick("home")}
+          style={{ textDecoration: "none" }} // Remove underline
+        >
+          <h2>EventHub</h2>
+        </Link>
       </div>
-
-      {/* Hamburger Icon */}
       <div
         className="hamburger"
         onClick={toggleMenu}
@@ -145,7 +149,7 @@ function Navbar() {
       >
         <li>
           <a
-            href="#home"
+            href="/ "
             className={activeLink === "home" ? "active" : ""}
             onClick={() => handleLinkClick("home")}
           >
