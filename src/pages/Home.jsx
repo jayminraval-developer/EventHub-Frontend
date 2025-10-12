@@ -1,17 +1,24 @@
+// src/pages/Home.jsx
 import React, { useState, useEffect } from "react";
 import "../styles/Home.css";
 import { FaMapMarkerAlt } from "react-icons/fa";
 import { MdOutlineSort } from "react-icons/md";
-import { IoCalendarOutline } from "react-icons/io5";
-import { FaTicketAlt } from "react-icons/fa";
 import Slider from "react-slick";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 
 const Home = () => {
   const cityList = [
-    "Ahmedabad", "Surat", "Rajkot", "Vadodara", "Hyderabad",
-    "Mumbai", "Pune", "Delhi", "Jaipur", "Bengaluru",
+    "Ahmedabad",
+    "Surat",
+    "Rajkot",
+    "Vadodara",
+    "Hyderabad",
+    "Mumbai",
+    "Pune",
+    "Delhi",
+    "Jaipur",
+    "Bengaluru",
   ];
 
   const [selectedCity, setSelectedCity] = useState("Ahmedabad");
@@ -19,20 +26,23 @@ const Home = () => {
   const [filteredCities, setFilteredCities] = useState([]);
   const [showSearch, setShowSearch] = useState(false);
 
+  // --- Auto background banner rotation ---
   const banners = [
     "/images/EBanner1.jpg",
     "/images/EBanner2.jpg",
     "/images/EBanner3.jpg",
   ];
+
   const [currentBanner, setCurrentBanner] = useState(0);
 
   useEffect(() => {
     const interval = setInterval(() => {
       setCurrentBanner((prev) => (prev + 1) % banners.length);
-    }, 5000);
+    }, 5000); // every 5 seconds
     return () => clearInterval(interval);
   }, []);
 
+  // --- Genre data ---
   const genres = [
     { name: "Navratri", icon: "🪔" },
     { name: "Music", icon: "🎵" },
@@ -45,13 +55,6 @@ const Home = () => {
     { name: "Food Fest", icon: "🍔" },
     { name: "Garba", icon: "🥁" },
     { name: "Theatre", icon: "🎭" },
-  ];
-
-  const featuredEvents = [
-    { title: "Arijit Singh Live", date: "Nov 22", location: "Mumbai", image: "/images/event1.jpg" },
-    { title: "Navratri Garba Night", date: "Oct 30", location: "Ahmedabad", image: "/images/event2.jpg" },
-    { title: "Startup Summit 2025", date: "Dec 12", location: "Pune", image: "/images/event3.jpg" },
-    { title: "Comedy Carnival", date: "Nov 5", location: "Delhi", image: "/images/event4.jpg" },
   ];
 
   const sliderSettings = {
@@ -73,8 +76,9 @@ const Home = () => {
   const handleSearch = (e) => {
     const value = e.target.value;
     setSearchInput(value);
-    if (value.trim() === "") setFilteredCities([]);
-    else {
+    if (value.trim() === "") {
+      setFilteredCities([]);
+    } else {
       const results = cityList.filter((city) =>
         city.toLowerCase().includes(value.toLowerCase())
       );
@@ -100,15 +104,19 @@ const Home = () => {
 
         <div className="hero-content text-white">
           <h1 className="hero-title">
-            Discover <span>Epic Events</span> Near You
+            Live & Discover <span>Events</span>
           </h1>
           <p className="hero-subtext">
-            Book your passes and experience unforgettable moments!
+            Find the best events happening around you.
           </p>
 
+          {/* ---- Location + Search ---- */}
           <div className="location-section">
             {!showSearch ? (
-              <div className="location-display" onClick={() => setShowSearch(true)}>
+              <div
+                className="location-display"
+                onClick={() => setShowSearch(true)}
+              >
                 <FaMapMarkerAlt /> {selectedCity}
               </div>
             ) : (
@@ -138,8 +146,11 @@ const Home = () => {
 
       {/* ---- Browse By Genre Section ---- */}
       <section className="browse-section my-5 px-4">
-        <div className="browse-header">
-          <h2>Browse By Genre in <span>{selectedCity}</span></h2>
+        <div className="d-flex justify-content-between align-items-center mb-3 flex-wrap">
+          <h2 className="fw-bold">
+            Browse By Genre{" "}
+            <span className="text-danger city-name">{selectedCity}</span>
+          </h2>
           <button className="sort-btn">
             <MdOutlineSort className="me-2" /> Sort By
           </button>
@@ -156,35 +167,6 @@ const Home = () => {
 
         <div className="text-center mt-3">
           <button className="show-more-btn">Show More</button>
-        </div>
-      </section>
-
-      {/* ---- Featured Events ---- */}
-      <section className="featured-section px-4 py-5">
-        <h2 className="section-title">🔥 Featured Events</h2>
-        <div className="event-grid">
-          {featuredEvents.map((event, index) => (
-            <div className="event-card fade-in" key={index}>
-              <img src={event.image} alt={event.title} />
-              <div className="event-info">
-                <h3>{event.title}</h3>
-                <p><IoCalendarOutline /> {event.date}</p>
-                <p><FaMapMarkerAlt /> {event.location}</p>
-                <button className="book-btn">
-                  <FaTicketAlt className="me-2" /> Book Now
-                </button>
-              </div>
-            </div>
-          ))}
-        </div>
-      </section>
-
-      {/* ---- Organizer CTA ---- */}
-      <section className="organizer-cta py-5">
-        <div className="cta-content">
-          <h2>Are You an Event Organizer?</h2>
-          <p>Host your events with EventsHub and reach thousands of attendees effortlessly.</p>
-          <button className="cta-btn">Start Hosting</button>
         </div>
       </section>
     </div>
