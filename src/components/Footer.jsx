@@ -1,73 +1,74 @@
 import React from 'react';
 import '../styles/Footer.css';
-import { FaInstagram, FaTwitter, FaEnvelope } from 'react-icons/fa';
+import {
+  FaInstagram,
+  FaTwitter,
+  FaEnvelope,
+  FaFacebookF,
+  FaYoutube,
+  FaLinkedinIn
+} from 'react-icons/fa';
+
+const companyLinks = ['About', 'Careers', 'Blog'];
+const supportLinks = ['Help Center', 'Terms', 'Privacy'];
+const socialLinks = [
+  { name: 'Instagram', icon: <FaInstagram />, href: '#' },
+  { name: 'Twitter', icon: <FaTwitter />, href: '#' },
+  { name: 'Facebook', icon: <FaFacebookF />, href: '#' },
+  { name: 'YouTube', icon: <FaYoutube />, href: '#' },
+  { name: 'LinkedIn', icon: <FaLinkedinIn />, href: '#' },
+  { name: 'Email', icon: <FaEnvelope />, href: 'mailto:support@eventhub.com' }
+];
 
 const Footer = () => {
   return (
-    <footer className="eventhub-footer">
-      {/* Bulbs / lights at top center */}
+    <footer className="eventhub-footer" role="contentinfo">
+      {/* Glowing bulbs */}
       <div className="footer-bulbs">
-        <span className="bulb bulb‑1"></span>
-        <span className="bulb bulb‑2"></span>
-        <span className="bulb bulb‑3"></span>
+        <span className="bulb bulb-1"></span>
+        <span className="bulb bulb-2"></span>
+        <span className="bulb bulb-3"></span>
+        <span className="bulb bulb-4"></span>
       </div>
 
-      <div className="lights-overlay"></div>
+      {/* Background light effect */}
+      <div className="lights-overlay" aria-hidden="true"></div>
 
       <div className="container">
         <div className="row g-5 justify-content-between align-items-start">
-
-          {/* Logo / Title */}
           <div className="col-md-4 text-md-start text-center animate-fade">
-            <h2 className="footer-title">EventHub</h2>
-            <p className="footer-tagline">Where every event shines!</p>
+            <h1 className="footer-title neon-glow" aria-label="EventHub">EventHub</h1>
+            <p className="footer-tagline">Feel the Beat. Join the Party.</p>
           </div>
 
-          {/* Company */}
-          <div className="col-md-2 col-6 animate-fade delay-1">
-            <h5 className="footer-heading">Company</h5>
+          <nav className="col-md-2 col-6 animate-fade delay-1" aria-label="Company Links">
+            <h2 className="footer-heading">Company</h2>
             <ul className="footer-links-list">
-              <li><a href="#" className="glow-link">About</a></li>
-              <li><a href="#" className="glow-link">Careers</a></li>
-              <li><a href="#" className="glow-link">Blog</a></li>
+              {companyLinks.map((link) => (
+                <li key={link}><a href="#">{link}</a></li>
+              ))}
             </ul>
-          </div>
+          </nav>
 
-          {/* Support */}
-          <div className="col-md-2 col-6 animate-fade delay-2">
-            <h5 className="footer-heading">Support</h5>
+          <nav className="col-md-2 col-6 animate-fade delay-2" aria-label="Support Links">
+            <h2 className="footer-heading">Support</h2>
             <ul className="footer-links-list">
-              <li><a href="#" className="glow-link">Help Center</a></li>
-              <li><a href="#" className="glow-link">Terms</a></li>
-              <li><a href="#" className="glow-link">Privacy</a></li>
+              {supportLinks.map((link) => (
+                <li key={link}><a href="#">{link}</a></li>
+              ))}
             </ul>
-          </div>
+          </nav>
 
-          {/* Contact */}
-          <div className="col-md-2 col-6 animate-fade delay-3">
-            <h5 className="footer-heading">Contact</h5>
-            <ul className="footer-links-list">
-              <li><a href="mailto:support@eventhub.com" className="glow-link"><FaEnvelope /> Email Us</a></li>
-              <li><a href="#" className="glow-link"><FaInstagram /> Instagram</a></li>
-              <li><a href="#" className="glow-link"><FaTwitter /> Twitter</a></li>
+          <nav className="col-md-3 col-12 animate-fade delay-3" aria-label="Connect on Social Media">
+            <h2 className="footer-heading">Connect</h2>
+            <ul className="footer-links-list social-icons">
+              {socialLinks.map(({ name, icon, href }) => (
+                <li key={name}>
+                  <a href={href} aria-label={name}>{icon} {name}</a>
+                </li>
+              ))}
             </ul>
-          </div>
-
-          {/* Newsletter / Subscribe */}
-          <div className="col-md-4 col-12 animate-fade delay-4">
-            <h5 className="footer-heading">Get Event Updates</h5>
-            <form className="newsletter-form mt-3">
-              <div className="input-group">
-                <input
-                  type="email"
-                  className="form-control"
-                  placeholder="Enter your email"
-                  required
-                />
-                <button className="btn btn-glow-subscribe" type="submit">Subscribe</button>
-              </div>
-            </form>
-          </div>
+          </nav>
         </div>
 
         <div className="footer-bottom text-center pt-4 mt-5">
