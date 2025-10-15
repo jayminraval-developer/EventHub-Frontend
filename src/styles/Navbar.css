@@ -418,6 +418,15 @@ button {
     gap: var(--spacing-sm);
   }
 
+    .profile-name {
+    display: none;
+  }
+
+  .profile-btn {
+    padding: 0.5rem; /* smaller padding for icon-only button */
+    font-size: 1.3rem;
+  }
+
   .login-btn {
     padding: 0.5rem 1.4rem;
     font-size: var(--font-size-sm);

@@ -1,5 +1,11 @@
 import React, { useState, useEffect } from "react";
-import { FaMapMarkerAlt, FaSearch, FaChevronDown, FaTimes, FaUserCircle } from "react-icons/fa";
+import {
+  FaMapMarkerAlt,
+  FaSearch,
+  FaChevronDown,
+  FaTimes,
+  FaUserCircle,
+} from "react-icons/fa";
 import "../styles/Navbar.css";
 
 const Navbar = () => {
@@ -12,7 +18,6 @@ const Navbar = () => {
   const cities = ["Ahmedabad", "Surat", "Vadodara", "Rajkot", "Gandhinagar"];
 
   useEffect(() => {
-    // Check if user is logged in
     const loggedInUser = JSON.parse(localStorage.getItem("eventhubUser"));
     if (loggedInUser) setUser(loggedInUser);
   }, []);
@@ -27,7 +32,7 @@ const Navbar = () => {
     localStorage.removeItem("eventhubUser");
     setUser(null);
     setShowProfileDropdown(false);
-    window.location.href = "/login"; // redirect to login
+    window.location.href = "/login";
   };
 
   return (
@@ -39,7 +44,7 @@ const Navbar = () => {
           </div>
 
           <div
-            className="location"
+            className="location desktop-only"
             onClick={() => {
               setShowLocationModal(true);
               setShowSearchModal(false);
@@ -56,7 +61,11 @@ const Navbar = () => {
         <div className="navbar-right">
           <div className="search-bar desktop-only">
             <FaSearch className="search-icon" />
-            <input type="text" placeholder="Search events..." className="search-input" />
+            <input
+              type="text"
+              placeholder="Search events..."
+              className="search-input"
+            />
           </div>
 
           <div className="mobile-icons">
@@ -87,41 +96,15 @@ const Navbar = () => {
           ) : (
             <div className="profile-container" style={{ position: "relative" }}>
               <button
-                className="login-btn"
+                className="login-btn profile-btn"
                 onClick={() => setShowProfileDropdown(!showProfileDropdown)}
               >
                 <FaUserCircle style={{ marginRight: "0.5rem" }} />
-                {user.name}
+                <span className="profile-name">{user.name}</span>
               </button>
               {showProfileDropdown && (
-                <div
-                  className="profile-dropdown"
-                  style={{
-                    position: "absolute",
-                    top: "100%",
-                    right: 0,
-                    backgroundColor: "#fff",
-                    border: "1px solid #ddd",
-                    borderRadius: "8px",
-                    padding: "0.5rem 1rem",
-                    boxShadow: "0 4px 12px rgba(0,0,0,0.15)",
-                    zIndex: 2000,
-                  }}
-                >
-                  <button
-                    style={{
-                      background: "none",
-                      border: "none",
-                      cursor: "pointer",
-                      fontSize: "16px",
-                      padding: "0.5rem 0",
-                      width: "100%",
-                      textAlign: "left",
-                    }}
-                    onClick={handleLogout}
-                  >
-                    Logout
-                  </button>
+                <div className="profile-dropdown">
+                  <button onClick={handleLogout}>Logout</button>
                 </div>
               )}
             </div>
@@ -151,7 +134,12 @@ const Navbar = () => {
             {showSearchModal && (
               <div className="popup-body">
                 <FaSearch className="popup-icon" />
-                <input type="text" className="popup-input" placeholder="Search events..." autoFocus />
+                <input
+                  type="text"
+                  className="popup-input"
+                  placeholder="Search events..."
+                  autoFocus
+                />
               </div>
             )}
 
@@ -160,7 +148,9 @@ const Navbar = () => {
                 {cities.map((city, idx) => (
                   <div
                     key={idx}
-                    className={`popup-option ${city === selectedCity ? "selected" : ""}`}
+                    className={`popup-option ${
+                      city === selectedCity ? "selected" : ""
+                    }`}
                     onClick={() => handleCitySelect(city)}
                   >
                     {city}
