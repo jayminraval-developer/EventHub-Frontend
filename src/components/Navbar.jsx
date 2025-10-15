@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState } from "react";
 import { FaMapMarkerAlt, FaSearch, FaChevronDown, FaTimes } from "react-icons/fa";
 import "../styles/Navbar.css";
 
@@ -6,20 +6,8 @@ const Navbar = () => {
   const [showSearchModal, setShowSearchModal] = useState(false);
   const [showLocationModal, setShowLocationModal] = useState(false);
   const [selectedCity, setSelectedCity] = useState("Ahmedabad");
-  const dropdownRef = useRef(null);
 
   const cities = ["Ahmedabad", "Surat", "Vadodara", "Rajkot", "Gandhinagar"];
-
-  useEffect(() => {
-    // Close location dropdown if clicked outside (desktop)
-    const handleClickOutside = (event) => {
-      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
-        setShowLocationModal(false);
-      }
-    };
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => document.removeEventListener("mousedown", handleClickOutside);
-  }, []);
 
   const handleCitySelect = (city) => {
     setSelectedCity(city);
@@ -36,39 +24,17 @@ const Navbar = () => {
           </div>
 
           <div
-            className="location desktop-only"
-            onClick={() => setShowLocationModal(!showLocationModal)}
-            ref={dropdownRef}
-            aria-haspopup="listbox"
+            className="location"
+            onClick={() => {
+              setShowLocationModal(true);
+              setShowSearchModal(false);
+            }}
+            aria-haspopup="dialog"
             aria-expanded={showLocationModal}
           >
             <FaMapMarkerAlt className="location-icon" />
             <span className="location-text">{selectedCity}</span>
             <FaChevronDown className="chevron-icon" />
-
-            <div
-              className={`location-dropdown ${showLocationModal ? "open" : ""}`}
-              role="listbox"
-              tabIndex={-1}
-            >
-              {cities.map((city, index) => (
-                <div
-                  key={index}
-                  className={`location-option ${city === selectedCity ? "selected" : ""}`}
-                  onClick={() => handleCitySelect(city)}
-                  role="option"
-                  aria-selected={city === selectedCity}
-                  tabIndex={0}
-                  onKeyDown={(e) => {
-                    if (e.key === "Enter" || e.key === " ") {
-                      handleCitySelect(city);
-                    }
-                  }}
-                >
-                  {city}
-                </div>
-              ))}
-            </div>
           </div>
         </div>
 
@@ -121,7 +87,7 @@ const Navbar = () => {
         </div>
       </nav>
 
-      {/* === Mobile Modals === */}
+      {/* === Popup Modal for Search / Location === */}
       {(showSearchModal || showLocationModal) && (
         <div
           className="popup-backdrop"
