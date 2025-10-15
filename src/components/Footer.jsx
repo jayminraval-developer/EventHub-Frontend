@@ -3,77 +3,74 @@ import '../styles/Footer.css';
 import {
   FaInstagram,
   FaTwitter,
-  FaEnvelope,
   FaFacebookF,
-  FaYoutube,
-  FaLinkedinIn
+  FaLinkedinIn,
+  FaEnvelope,
+  FaPhoneAlt,
+  FaHome,
+  FaMapMarkerAlt,
+  FaTicketAlt,
+  FaBus,
+  FaQuestionCircle,
+  FaUserShield,
+  FaFileContract,
 } from 'react-icons/fa';
-
-const companyLinks = ['About', 'Careers', 'Blog'];
-const supportLinks = ['Help Center', 'Terms', 'Privacy'];
-const socialLinks = [
-  { name: 'Instagram', icon: <FaInstagram />, href: '#' },
-  { name: 'Twitter', icon: <FaTwitter />, href: '#' },
-  { name: 'Facebook', icon: <FaFacebookF />, href: '#' },
-  { name: 'YouTube', icon: <FaYoutube />, href: '#' },
-  { name: 'LinkedIn', icon: <FaLinkedinIn />, href: '#' },
-  { name: 'Email', icon: <FaEnvelope />, href: 'mailto:support@eventhub.com' }
-];
 
 const Footer = () => {
   return (
-    <footer className="eventhub-footer" role="contentinfo">
-      {/* Glowing bulbs */}
-      <div className="footer-bulbs">
-        <span className="bulb bulb-1"></span>
-        <span className="bulb bulb-2"></span>
-        <span className="bulb bulb-3"></span>
-        <span className="bulb bulb-4"></span>
+    <footer className="custom-footer">
+      <div className="footer-main">
+        {/* Logo & Description */}
+        <div className="footer-column logo-col">
+          <h2 className="footer-logo">
+            <span className="logo-red">Event</span><span className="logo-white">Hub</span>
+          </h2>
+          <p className="footer-description">
+            <strong>
+              Discover events, book tickets, and travel smart – all from one hub built for your experience.
+            </strong>
+          </p>
+        </div>
+
+        {/* Quick Links */}
+        <div className="footer-column">
+          <h3 className="footer-heading">Quick Links</h3>
+          <ul className="footer-list">
+            <li><a href="/"><FaHome /> Home</a></li>
+            <li><a href="/"><FaMapMarkerAlt /> Events Near Me</a></li>
+            <li><a href="/"><FaTicketAlt /> Book Tickets</a></li>
+            <li><a href="/"><FaBus /> Travel Info</a></li>
+          </ul>
+        </div>
+
+        {/* Support / Contact */}
+        <div className="footer-column">
+          <h3 className="footer-heading">Support & Contact</h3>
+          <ul className="footer-list">
+            <li><a href="/"><FaQuestionCircle /> Help Center</a></li>
+            <li><a href="/"><FaUserShield /> Privacy Policy</a></li>
+            <li><a href="/"><FaFileContract /> Terms of Service</a></li>
+          </ul>
+          <div className="footer-contact">
+            <p><FaEnvelope /> support@eventhub.com</p>
+            <p><FaPhoneAlt /> +91 7046957063</p>
+          </div>
+        </div>
+
+        {/* Social Links */}
+        <div className="footer-column">
+          <h3 className="footer-heading">Follow Us</h3>
+          <div className="footer-socials">
+            <a href="https://www.instagram.com/jaymin_raval___hindu/" target="_blank" rel="noreferrer" title="Instagram"><FaInstagram /></a>
+            <a href="#" title="Twitter"><FaTwitter /></a>
+            <a href="#" title="Facebook"><FaFacebookF /></a>
+            <a href="https://www.linkedin.com/in/jayminraval7046/" target="_blank" rel="noreferrer" title="LinkedIn"><FaLinkedinIn /></a>
+          </div>
+        </div>
       </div>
 
-      {/* Background light effect */}
-      <div className="lights-overlay" aria-hidden="true"></div>
-
-      <div className="container">
-        <div className="row g-5 justify-content-between align-items-start">
-          <div className="col-md-4 text-md-start text-center animate-fade">
-            <h1 className="footer-title neon-glow" aria-label="EventHub">EventHub</h1>
-            <p className="footer-tagline">Feel the Beat. Join the Party.</p>
-          </div>
-
-          <nav className="col-md-2 col-6 animate-fade delay-1" aria-label="Company Links">
-            <h2 className="footer-heading">Company</h2>
-            <ul className="footer-links-list">
-              {companyLinks.map((link) => (
-                <li key={link}><a href="#">{link}</a></li>
-              ))}
-            </ul>
-          </nav>
-
-          <nav className="col-md-2 col-6 animate-fade delay-2" aria-label="Support Links">
-            <h2 className="footer-heading">Support</h2>
-            <ul className="footer-links-list">
-              {supportLinks.map((link) => (
-                <li key={link}><a href="#">{link}</a></li>
-              ))}
-            </ul>
-          </nav>
-
-          <nav className="col-md-3 col-12 animate-fade delay-3" aria-label="Connect on Social Media">
-            <h2 className="footer-heading">Connect</h2>
-            <ul className="footer-links-list social-icons">
-              {socialLinks.map(({ name, icon, href }) => (
-                <li key={name}>
-                  <a href={href} aria-label={name}>{icon} {name}</a>
-                </li>
-              ))}
-            </ul>
-          </nav>
-        </div>
-
-        <div className="footer-bottom text-center pt-4 mt-5">
-          <p>&copy; {new Date().getFullYear()} EventHub. All rights reserved.</p>
-        </div>
+      <div className="footer-bottom">
+        <p>&copy; {new Date().getFullYear()} <strong>EventHub</strong>. All rights reserved.</p>
       </div>
     </footer>
   );
