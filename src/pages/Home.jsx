@@ -7,6 +7,29 @@ import Slider from "react-slick";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 
+import homeIcon from "../assets/icons/Home.svg";
+import navratriIcon from "../assets/icons/navratri.svg";
+import musicIcon from "../assets/icons/music.svg";
+import educationalIcon from "../assets/icons/educational.svg";
+import devotionalIcon from "../assets/icons/devotional.svg";
+import exhibitionsIcon from "../assets/icons/exhibitions.svg";
+import christmasIcon from "../assets/icons/default.svg"; // No christmas.svg found, fallback
+import foodFestIcon from "../assets/icons/default.svg";  // No food.svg found, fallback
+import newYearIcon from "../assets/icons/new-year.svg";
+import theatreIcon from "../assets/icons/plays.svg";     // Using plays.svg for theatre
+import diwaliIcon from "../assets/icons/default.svg";    // No diwali.svg found, fallback
+import adventureIcon from "../assets/icons/adventure.svg"; // No adventure.svg found, fallback
+import adventureTravelIcon from "../assets/icons/adventure-travel.svg"; // No adventure-travel.svg found, fallback
+import awardShowIcon from "../assets/icons/award-show.svg"; // No award-show.svg found, fallback
+import comedyIcon from "../assets/icons/comedy.svg"; // No comedy.svg found, fallback
+import defaultIcon from "../assets/icons/default.svg"; // Default icon
+import holiIcon from "../assets/icons/holi.svg"; // No holi.svg found, fallback
+import musicFestivalIcon from "../assets/icons/music-festival.svg"; // No music-festival.svg found, fallback
+import playsIcon from "../assets/icons/plays.svg"; // No plays.svg found, fallback
+import technoIcon from "../assets/icons/techno.svg"; // No techno.svg found, fallback
+import workShopIcon from "../assets/icons/work-shop.svg"; // No workshop.svg found, fallback
+
+
 const Home = () => {
   const cityList = [
     "Ahmedabad",
@@ -25,6 +48,36 @@ const Home = () => {
   const [searchInput, setSearchInput] = useState("");
   const [filteredCities, setFilteredCities] = useState([]);
   const [showSearch, setShowSearch] = useState(false);
+  const [showAllGenres, setShowAllGenres] = useState(false);
+
+  // --- Genre data ---
+const genres = [
+  { name: "Home", icon: homeIcon },
+  { name: "Navratri", icon: navratriIcon },
+  { name: "Music", icon: musicIcon },
+  { name: "Educational", icon: educationalIcon },
+  { name: "Devotional", icon: devotionalIcon },
+  { name: "Exhibitions", icon: exhibitionsIcon },
+  { name: "Christmas", icon: christmasIcon },
+  { name: "Food Fest", icon: foodFestIcon },
+  { name: "New Year", icon: newYearIcon },
+  { name: "Theatre", icon: theatreIcon },
+  { name: "Diwali", icon: diwaliIcon },
+  { name: "Adventure", icon: adventureIcon },
+  { name: "Adventure Travel", icon: adventureTravelIcon },
+  { name: "Award Show", icon: awardShowIcon },
+  { name: "Comedy", icon: comedyIcon },
+  { name: "Holi", icon: holiIcon },
+  { name: "Music Festival", icon: musicFestivalIcon },
+  { name: "Plays", icon: playsIcon },
+  { name: "Techno", icon: technoIcon },
+  { name: "Workshop", icon: workShopIcon },
+  { name: "Others", icon: defaultIcon },
+
+];
+
+
+  const visibleGenres = showAllGenres ? genres : genres.slice(0, 6);
 
   // --- Auto background banner rotation ---
   const banners = [
@@ -38,24 +91,9 @@ const Home = () => {
   useEffect(() => {
     const interval = setInterval(() => {
       setCurrentBanner((prev) => (prev + 1) % banners.length);
-    }, 5000); // every 5 seconds
+    }, 5000);
     return () => clearInterval(interval);
   }, []);
-
-  // --- Genre data ---
-  const genres = [
-    { name: "Navratri", icon: "🪔" },
-    { name: "Music", icon: "🎵" },
-    { name: "Educational", icon: "🎓" },
-    { name: "Devotional", icon: "🙏" },
-    { name: "Exhibitions", icon: "🏛️" },
-    { name: "Diwali", icon: "✨" },
-    { name: "Christmas", icon: "🎄" },
-    { name: "New Year", icon: "🎆" },
-    { name: "Food Fest", icon: "🍔" },
-    { name: "Garba", icon: "🥁" },
-    { name: "Theatre", icon: "🎭" },
-  ];
 
   const sliderSettings = {
     dots: false,
@@ -145,28 +183,23 @@ const Home = () => {
       </section>
 
       {/* ---- Browse By Genre Section ---- */}
-      <section className="browse-section my-5 px-4">
-        <div className="d-flex justify-content-between align-items-center mb-3 flex-wrap">
-          <h2 className="fw-bold">
-            Browse By Genre{" "}
-            <span className="text-danger city-name">{selectedCity}</span>
-          </h2>
-          <button className="sort-btn">
-            <MdOutlineSort className="me-2" /> Sort By
-          </button>
-        </div>
-
-        <Slider {...sliderSettings}>
-          {genres.map((genre) => (
-            <div key={genre.name} className="genre-item text-center p-3">
-              <div className="genre-icon fs-1">{genre.icon}</div>
-              <p className="mt-2 fw-semibold">{genre.name}</p>
+      <section className="browse-section my-5 px-5">
+        <div className="genre-scroll-container">
+          {visibleGenres.map((genre) => (
+            <div key={genre.name} className="genre-item text-center">
+              <img src={genre.icon} alt={genre.name} className="genre-img" />
+              <p className="mt-3 fw-semibold">{genre.name}</p>
             </div>
           ))}
-        </Slider>
+        </div>
 
-        <div className="text-center mt-3">
-          <button className="show-more-btn">Show More</button>
+        <div className="text-start mt-4 px-5">
+          <button
+            className="show-more-btn"
+            onClick={() => setShowAllGenres(!showAllGenres)}
+          >
+            {showAllGenres ? "Show Less" : "Show More"}
+          </button>
         </div>
       </section>
     </div>

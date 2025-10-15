@@ -414,13 +414,17 @@ button {
     padding: 0 var(--spacing-sm);
   }
 
+   .navbar-right {
+    gap: var(--spacing-sm);
+  }
+
   .login-btn {
     padding: 0.5rem 1.4rem;
     font-size: var(--font-size-sm);
   }
 
-  .location {
-    min-width: 130px;
+   .location {
+    display: none !important;
   }
 }
 
