@@ -1,18 +1,33 @@
-import React, { useState } from "react";
-import { FaMapMarkerAlt, FaSearch, FaChevronDown, FaTimes } from "react-icons/fa";
+import React, { useState, useEffect } from "react";
+import { FaMapMarkerAlt, FaSearch, FaChevronDown, FaTimes, FaUserCircle } from "react-icons/fa";
 import "../styles/Navbar.css";
 
 const Navbar = () => {
   const [showSearchModal, setShowSearchModal] = useState(false);
   const [showLocationModal, setShowLocationModal] = useState(false);
   const [selectedCity, setSelectedCity] = useState("Ahmedabad");
+  const [user, setUser] = useState(null);
+  const [showProfileDropdown, setShowProfileDropdown] = useState(false);
 
   const cities = ["Ahmedabad", "Surat", "Vadodara", "Rajkot", "Gandhinagar"];
+
+  useEffect(() => {
+    // Check if user is logged in
+    const loggedInUser = JSON.parse(localStorage.getItem("eventhubUser"));
+    if (loggedInUser) setUser(loggedInUser);
+  }, []);
 
   const handleCitySelect = (city) => {
     setSelectedCity(city);
     setShowLocationModal(false);
     setShowSearchModal(false);
+  };
+
+  const handleLogout = () => {
+    localStorage.removeItem("eventhubUser");
+    setUser(null);
+    setShowProfileDropdown(false);
+    window.location.href = "/login"; // redirect to login
   };
 
   return (
@@ -41,11 +56,7 @@ const Navbar = () => {
         <div className="navbar-right">
           <div className="search-bar desktop-only">
             <FaSearch className="search-icon" />
-            <input
-              type="text"
-              placeholder="Search events..."
-              className="search-input"
-            />
+            <input type="text" placeholder="Search events..." className="search-input" />
           </div>
 
           <div className="mobile-icons">
@@ -55,15 +66,6 @@ const Navbar = () => {
                 setShowLocationModal(true);
                 setShowSearchModal(false);
               }}
-              aria-label="Open location selector"
-              role="button"
-              tabIndex={0}
-              onKeyDown={(e) => {
-                if (e.key === "Enter" || e.key === " ") {
-                  setShowLocationModal(true);
-                  setShowSearchModal(false);
-                }
-              }}
             />
             <FaSearch
               className="mobile-icon"
@@ -71,19 +73,59 @@ const Navbar = () => {
                 setShowSearchModal(true);
                 setShowLocationModal(false);
               }}
-              aria-label="Open search"
-              role="button"
-              tabIndex={0}
-              onKeyDown={(e) => {
-                if (e.key === "Enter" || e.key === " ") {
-                  setShowSearchModal(true);
-                  setShowLocationModal(false);
-                }
-              }}
             />
           </div>
 
-          <button className="login-btn">Login</button>
+          {/* ===== Login / Profile Button ===== */}
+          {!user ? (
+            <button
+              className="login-btn"
+              onClick={() => (window.location.href = "/login")}
+            >
+              Login
+            </button>
+          ) : (
+            <div className="profile-container" style={{ position: "relative" }}>
+              <button
+                className="login-btn"
+                onClick={() => setShowProfileDropdown(!showProfileDropdown)}
+              >
+                <FaUserCircle style={{ marginRight: "0.5rem" }} />
+                {user.name}
+              </button>
+              {showProfileDropdown && (
+                <div
+                  className="profile-dropdown"
+                  style={{
+                    position: "absolute",
+                    top: "100%",
+                    right: 0,
+                    backgroundColor: "#fff",
+                    border: "1px solid #ddd",
+                    borderRadius: "8px",
+                    padding: "0.5rem 1rem",
+                    boxShadow: "0 4px 12px rgba(0,0,0,0.15)",
+                    zIndex: 2000,
+                  }}
+                >
+                  <button
+                    style={{
+                      background: "none",
+                      border: "none",
+                      cursor: "pointer",
+                      fontSize: "16px",
+                      padding: "0.5rem 0",
+                      width: "100%",
+                      textAlign: "left",
+                    }}
+                    onClick={handleLogout}
+                  >
+                    Logout
+                  </button>
+                </div>
+              )}
+            </div>
+          )}
         </div>
       </nav>
 
@@ -95,28 +137,13 @@ const Navbar = () => {
             setShowSearchModal(false);
             setShowLocationModal(false);
           }}
-          role="dialog"
-          aria-modal="true"
         >
-          <div
-            className="popup-modal"
-            onClick={(e) => e.stopPropagation()}
-            tabIndex={-1}
-          >
+          <div className="popup-modal" onClick={(e) => e.stopPropagation()}>
             <div className="popup-close">
               <FaTimes
                 onClick={() => {
                   setShowSearchModal(false);
                   setShowLocationModal(false);
-                }}
-                aria-label="Close modal"
-                role="button"
-                tabIndex={0}
-                onKeyDown={(e) => {
-                  if (e.key === "Enter" || e.key === " ") {
-                    setShowSearchModal(false);
-                    setShowLocationModal(false);
-                  }
                 }}
               />
             </div>
@@ -124,30 +151,17 @@ const Navbar = () => {
             {showSearchModal && (
               <div className="popup-body">
                 <FaSearch className="popup-icon" />
-                <input
-                  type="text"
-                  className="popup-input"
-                  placeholder="Search events..."
-                  autoFocus
-                />
+                <input type="text" className="popup-input" placeholder="Search events..." autoFocus />
               </div>
             )}
 
             {showLocationModal && (
-              <div className="popup-body" role="listbox">
+              <div className="popup-body">
                 {cities.map((city, idx) => (
                   <div
                     key={idx}
                     className={`popup-option ${city === selectedCity ? "selected" : ""}`}
                     onClick={() => handleCitySelect(city)}
-                    role="option"
-                    aria-selected={city === selectedCity}
-                    tabIndex={0}
-                    onKeyDown={(e) => {
-                      if (e.key === "Enter" || e.key === " ") {
-                        handleCitySelect(city);
-                      }
-                    }}
                   >
                     {city}
                   </div>

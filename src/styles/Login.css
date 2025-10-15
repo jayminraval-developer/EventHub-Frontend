@@ -135,6 +135,14 @@ form input:focus {
   color: #64748b;
 }
 
+.error {
+  color: #ff6b6b;
+  font-size: 0.8rem;
+  margin-top: -12px;
+  margin-bottom: 10px;
+  display: block;
+} 
+
 /* 📱 Responsiveness */
 @media (max-width: 768px) {
   .login-box {
