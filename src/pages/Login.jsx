@@ -1,8 +1,7 @@
-// src/pages/Login.jsx
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import "../styles/Login.css";
 import axios from "axios";
-import { FaEye, FaEyeSlash } from "react-icons/fa";
+import { FaEye, FaEyeSlash, FaUserCircle } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 
 function Login() {
@@ -10,33 +9,29 @@ function Login() {
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [errors, setErrors] = useState({});
+  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
-  // Validation function
+  useEffect(() => {
+    const savedUser = localStorage.getItem("eventhubUser");
+    if (savedUser) navigate("/");
+  }, [navigate]);
+
   const validate = () => {
     const newErrors = {};
-
-    // Email must end with @gmail.com
-    if (!email) {
-      newErrors.email = "Email is required";
-    } else if (!/^[\w.-]+@gmail\.com$/i.test(email)) {
+    if (!email) newErrors.email = "Email is required";
+    else if (!/^[\w.-]+@gmail\.com$/i.test(email))
       newErrors.email = "Email must end with @gmail.com";
-    }
 
-    // Password validation
-    if (!password) {
-      newErrors.password = "Password is required";
-    } else {
-      if (password.length < 7) {
+    if (!password) newErrors.password = "Password is required";
+    else {
+      if (password.length < 7)
         newErrors.password = "Password must be at least 7 characters";
-      }
-      const specialCharMatch = /[!@#$%^&*(),.?":{}|<>]/.test(password);
-      const numberMatch = (password.match(/\d/g) || []).length >= 2;
-
-      if (!specialCharMatch || !numberMatch) {
+      const hasSpecial = /[!@#$%^&*(),.?\":{}|<>]/.test(password);
+      const hasNumbers = (password.match(/\d/g) || []).length >= 2;
+      if (!hasSpecial || !hasNumbers)
         newErrors.password =
           "Password must contain at least 1 special character and 2 numbers";
-      }
     }
 
     setErrors(newErrors);
@@ -45,36 +40,37 @@ function Login() {
 
   const handleLogin = async (e) => {
     e.preventDefault();
-
     if (!validate()) return;
+    setLoading(true);
 
     try {
       const { data } = await axios.post(
         "https://eventhub-backend-mveb.onrender.com/api/user/login",
         { email, password }
       );
-
-      // Save user token to localStorage
       localStorage.setItem("eventhubUser", JSON.stringify(data));
-      
-      // Redirect to home page
       navigate("/");
-
     } catch (error) {
       setErrors({ api: error.response?.data?.message || "Login failed" });
+    } finally {
+      setLoading(false);
     }
   };
 
   return (
     <div className="login-container">
+      {/* Animated background waves */}
+      <div className="wave"></div>
+      <div className="wave wave2"></div>
+
       <div className="login-box">
+        <FaUserCircle className="login-icon" />
         <h3>Welcome Back 👋</h3>
         <p>
           Login to your <span>EventHub</span> account
         </p>
 
         <form onSubmit={handleLogin} autoComplete="off">
-          {/* Email */}
           <label>Email Address</label>
           <input
             type="email"
@@ -85,9 +81,8 @@ function Login() {
           />
           {errors.email && <span className="error">{errors.email}</span>}
 
-          {/* Password */}
           <label>Password</label>
-          <div style={{ position: "relative" }}>
+          <div className="password-container">
             <input
               type={showPassword ? "text" : "password"}
               placeholder="Enter your password"
@@ -97,30 +92,25 @@ function Login() {
             />
             <span
               onClick={() => setShowPassword(!showPassword)}
-              style={{
-                position: "absolute",
-                right: "10px",
-                top: "50%",
-                transform: "translateY(-50%)",
-                cursor: "pointer",
-                color: "#00b4d8",
-              }}
+              className="toggle-eye"
             >
               {showPassword ? <FaEyeSlash /> : <FaEye />}
             </span>
           </div>
-          {errors.password && <span className="error">{errors.password}</span>}
 
-          {/* API error */}
+          {errors.password && <span className="error">{errors.password}</span>}
           {errors.api && <span className="error">{errors.api}</span>}
 
-          <button type="submit" className="login-btn">
-            Login
+          <button type="submit" className="login-btn" disabled={loading}>
+            {loading ? "Logging in..." : "Login"}
           </button>
         </form>
 
         <p className="signup">
-          Don’t have an account? <a href="#">Sign up</a>
+          Don’t have an account?{" "}
+          <a href="#" className="signup-link">
+            Sign up
+          </a>
         </p>
       </div>
     </div>
