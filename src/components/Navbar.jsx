@@ -32,7 +32,7 @@ const Navbar = () => {
     localStorage.removeItem("eventhubUser");
     setUser(null);
     setShowProfileDropdown(false);
-    window.location.href = "/login";
+    window.location.href = "/";
   };
 
   return (

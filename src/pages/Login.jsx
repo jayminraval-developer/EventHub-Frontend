@@ -56,7 +56,7 @@ function Login() {
 
       // Save user token to localStorage
       localStorage.setItem("eventhubUser", JSON.stringify(data));
-
+      
       // Redirect to home page
       navigate("/");
 
