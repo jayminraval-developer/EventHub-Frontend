@@ -223,8 +223,8 @@ button {
 
 .login-btn:hover,
 .login-btn:focus {
-  transform: translateY(-1px);
-  box-shadow: 0 6px 22px rgba(179, 18, 23, 0.4);
+  transform: none;
+  box-shadow: 0 4px 14px rgba(229, 45, 39, 0.25);
   outline: none;
 }
 

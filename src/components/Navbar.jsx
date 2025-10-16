@@ -12,14 +12,25 @@ const Navbar = () => {
   const [showSearchModal, setShowSearchModal] = useState(false);
   const [showLocationModal, setShowLocationModal] = useState(false);
   const [selectedCity, setSelectedCity] = useState("Ahmedabad");
-  const [user, setUser] = useState(null);
   const [showProfileDropdown, setShowProfileDropdown] = useState(false);
+  const [user, setUser] = useState(null);
 
   const cities = ["Ahmedabad", "Surat", "Vadodara", "Rajkot", "Gandhinagar"];
 
+  // ✅ Load user immediately on mount
   useEffect(() => {
-    const loggedInUser = JSON.parse(localStorage.getItem("eventhubUser"));
-    if (loggedInUser) setUser(loggedInUser);
+    const savedUser = localStorage.getItem("eventhubUser");
+    if (savedUser) setUser(JSON.parse(savedUser));
+
+    // 👇 Keep in sync across tabs / refreshes
+    const handleStorageChange = () => {
+      const updatedUser = localStorage.getItem("eventhubUser");
+      setUser(updatedUser ? JSON.parse(updatedUser) : null);
+    };
+
+    window.addEventListener("storage", handleStorageChange);
+
+    return () => window.removeEventListener("storage", handleStorageChange);
   }, []);
 
   const handleCitySelect = (city) => {
@@ -32,14 +43,18 @@ const Navbar = () => {
     localStorage.removeItem("eventhubUser");
     setUser(null);
     setShowProfileDropdown(false);
-    window.location.href = "/";
+    window.location.reload();
   };
 
   return (
     <>
       <nav className="navbar">
         <div className="navbar-left">
-          <div className="logo">
+          <div
+            className="logo"
+            onClick={() => (window.location.href = "/")}
+            style={{ cursor: "pointer" }}
+          >
             <span className="logo-highlight">Event</span>Hub
           </div>
 
@@ -85,7 +100,7 @@ const Navbar = () => {
             />
           </div>
 
-          {/* ===== Login / Profile Button ===== */}
+          {/* === Login / Profile Button === */}
           {!user ? (
             <button
               className="login-btn"
@@ -97,10 +112,10 @@ const Navbar = () => {
             <div className="profile-container" style={{ position: "relative" }}>
               <button
                 className="login-btn profile-btn"
-                onClick={() => setShowProfileDropdown(!showProfileDropdown)}
+                onClick={() => setShowProfileDropdown((prev) => !prev)}
               >
                 <FaUserCircle style={{ marginRight: "0.5rem" }} />
-                <span className="profile-name">{user.name}</span>
+                <span className="profile-name">{user.name || "User"}</span>
               </button>
               {showProfileDropdown && (
                 <div className="profile-dropdown">
