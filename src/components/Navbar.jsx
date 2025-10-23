@@ -17,6 +17,15 @@ const Navbar = () => {
 
   const cities = ["Ahmedabad", "Surat", "Vadodara", "Rajkot", "Gandhinagar"];
 
+  useEffect(() => {
+  if (showSearchModal || showLocationModal) {
+    document.body.style.overflow = "hidden";
+  } else {
+    document.body.style.overflow = "auto";
+  }
+}, [showSearchModal, showLocationModal]);
+
+
   // ✅ Load user immediately on mount
   useEffect(() => {
     const savedUser = localStorage.getItem("eventhubUser");
