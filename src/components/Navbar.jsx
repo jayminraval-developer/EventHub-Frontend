@@ -26,12 +26,12 @@ const Navbar = () => {
 }, [showSearchModal, showLocationModal]);
 
 
-  // ✅ Load user immediately on mount
+  // Load user immediately on mount
   useEffect(() => {
     const savedUser = localStorage.getItem("eventhubUser");
     if (savedUser) setUser(JSON.parse(savedUser));
 
-    // 👇 Keep in sync across tabs / refreshes
+    // Keep in sync across tabs / refreshes
     const handleStorageChange = () => {
       const updatedUser = localStorage.getItem("eventhubUser");
       setUser(updatedUser ? JSON.parse(updatedUser) : null);
