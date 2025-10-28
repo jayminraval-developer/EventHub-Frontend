@@ -19,6 +19,7 @@ function Login() {
 
   const validate = () => {
     const newErrors = {};
+
     if (!email) newErrors.email = "Email is required";
     else if (!/^[\w.-]+@gmail\.com$/i.test(email))
       newErrors.email = "Email must end with @gmail.com";
@@ -26,12 +27,12 @@ function Login() {
     if (!password) newErrors.password = "Password is required";
     else {
       if (password.length < 7)
-        newErrors.password = "Password must be at least 7 characters";
+        newErrors.password = "Password must be at least 7 characters long";
       const hasSpecial = /[!@#$%^&*(),.?\":{}|<>]/.test(password);
       const hasNumbers = (password.match(/\d/g) || []).length >= 2;
       if (!hasSpecial || !hasNumbers)
         newErrors.password =
-          "Password must contain at least 1 special character and 2 numbers";
+          "Password must include 1 special character & 2 numbers";
     }
 
     setErrors(newErrors);
@@ -58,34 +59,30 @@ function Login() {
   };
 
   return (
-    <div className="login-container">
-      {/* Animated background waves */}
-      <div className="wave"></div>
-      <div className="wave wave2"></div>
-
-      <div className="login-box">
-        <FaUserCircle className="login-icon" />
-        <h3>Welcome Back 👋</h3>
-        <p>
-          Login to your <span>EventHub</span> account
-        </p>
+    <div className="login-wrapper">
+      <div className="login-container">
+        <div className="login-icon">
+          <FaUserCircle />
+        </div>
+        <h3>Welcome back 👋</h3>
+        <p>Please sign in to continue to <span>EventHub</span></p>
 
         <form onSubmit={handleLogin} autoComplete="off">
-          <label>Email Address</label>
-          <input
-            type="email"
-            placeholder="Enter your email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            autoComplete="new-email"
-          />
+          <div className="input-group">
+            <input
+              type="email"
+              placeholder="Email address"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              autoComplete="new-email"
+            />
+          </div>
           {errors.email && <span className="error">{errors.email}</span>}
 
-          <label>Password</label>
-          <div className="password-container">
+          <div className="input-group">
             <input
               type={showPassword ? "text" : "password"}
-              placeholder="Enter your password"
+              placeholder="Password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               autoComplete="new-password"
@@ -97,14 +94,22 @@ function Login() {
               {showPassword ? <FaEyeSlash /> : <FaEye />}
             </span>
           </div>
-
           {errors.password && <span className="error">{errors.password}</span>}
           {errors.api && <span className="error">{errors.api}</span>}
 
           <button type="submit" className="login-btn" disabled={loading}>
-            {loading ? "Logging in..." : "Login"}
+            {loading ? "Logging in..." : "Sign In"}
           </button>
         </form>
+
+        <div className="social-login">
+          <p className="or">OR CONTINUE WITH</p>
+          <div className="social-icons">
+            <button title="Google">G</button>
+            <button title="GitHub">🐙</button>
+            <button title="Twitter">🐦</button>
+          </div>
+        </div>
 
         <p className="signup">
           Don’t have an account?{" "}
