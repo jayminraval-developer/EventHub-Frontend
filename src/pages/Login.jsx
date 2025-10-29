@@ -1,3 +1,4 @@
+// src/pages/Login.jsx
 import React, { useState, useEffect } from "react";
 import "../styles/Login.css";
 import axios from "axios";
@@ -12,15 +13,15 @@ function Login() {
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
-  // 🧠 If already logged in, redirect to home
+  // Redirect if user already logged in
   useEffect(() => {
     const savedUser = localStorage.getItem("eventhubUser");
     if (savedUser) navigate("/");
   }, [navigate]);
 
+  // Validate email and password
   const validate = () => {
     const newErrors = {};
-
     if (!email) newErrors.email = "Email is required";
     else if (!/^[\w.-]+@gmail\.com$/i.test(email))
       newErrors.email = "Email must end with @gmail.com";
@@ -40,10 +41,12 @@ function Login() {
     return Object.keys(newErrors).length === 0;
   };
 
+  // Handle login
   const handleLogin = async (e) => {
     e.preventDefault();
     if (!validate()) return;
-    setLoading(true);
+
+    setLoading(true); // show spinner
 
     try {
       const { data } = await axios.post(
@@ -51,18 +54,20 @@ function Login() {
         { email, password }
       );
 
-      // 🧠 Save user in localStorage
+      // Save user locally
       localStorage.setItem("eventhubUser", JSON.stringify(data));
 
-      // 🔔 Tell Navbar and other components user has changed
+      // Notify other components
       window.dispatchEvent(new Event("userUpdated"));
 
-      // ✅ Redirect to home
+      // Redirect to home
       navigate("/");
     } catch (error) {
-      setErrors({ api: error.response?.data?.message || "Login failed" });
+      setErrors({
+        api: error.response?.data?.message || "Login failed. Try again.",
+      });
     } finally {
-      setLoading(false);
+      setLoading(false); // hide spinner
     }
   };
 
@@ -78,6 +83,7 @@ function Login() {
         </p>
 
         <form onSubmit={handleLogin} autoComplete="off">
+          {/* Email */}
           <div className="input-group">
             <input
               type="email"
@@ -89,6 +95,7 @@ function Login() {
           </div>
           {errors.email && <span className="error">{errors.email}</span>}
 
+          {/* Password */}
           <div className="input-group">
             <input
               type={showPassword ? "text" : "password"}
@@ -107,11 +114,13 @@ function Login() {
           {errors.password && <span className="error">{errors.password}</span>}
           {errors.api && <span className="error">{errors.api}</span>}
 
+          {/* Login Button */}
           <button type="submit" className="login-btn" disabled={loading}>
             {loading ? "Logging in..." : "Sign In"}
           </button>
         </form>
 
+        {/* Social Login */}
         <div className="social-login">
           <p className="or">OR CONTINUE WITH</p>
           <div className="social-icons">
