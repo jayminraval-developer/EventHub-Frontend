@@ -24,7 +24,7 @@ const Navbar = () => {
   const navigate = useNavigate();
   const cities = ["Ahmedabad", "Surat", "Vadodara", "Rajkot", "Gandhinagar"];
 
-  // Scroll effect
+  // Scroll effect for navbar
   useEffect(() => {
     const handleScroll = () => {
       const navbar = document.querySelector(".navbar");
@@ -35,7 +35,7 @@ const Navbar = () => {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  // Outside click handler
+  // Handle outside clicks for dropdowns
   useEffect(() => {
     const handleClickOutside = (e) => {
       if (
@@ -52,7 +52,7 @@ const Navbar = () => {
     return () => document.removeEventListener("click", handleClickOutside);
   }, []);
 
-  // Disable scroll when modals open
+  // Disable body scroll when modals are open
   useEffect(() => {
     document.body.classList.toggle(
       "no-scroll",
@@ -60,7 +60,7 @@ const Navbar = () => {
     );
   }, [showSearchModal, showLocationModal]);
 
-  // Load user & city
+  // Load user and selected city from localStorage on mount
   useEffect(() => {
     try {
       const savedUser = JSON.parse(localStorage.getItem("eventhubUser"));
@@ -72,7 +72,7 @@ const Navbar = () => {
     if (savedCity) setSelectedCity(savedCity);
   }, []);
 
-  // 🔁 Listen for user login/logout changes dynamically
+  // Listen for user login/logout changes dynamically
   useEffect(() => {
     const handleUserUpdate = () => {
       const savedUser = JSON.parse(localStorage.getItem("eventhubUser"));
@@ -80,7 +80,7 @@ const Navbar = () => {
     };
 
     window.addEventListener("userUpdated", handleUserUpdate);
-    window.addEventListener("storage", handleUserUpdate); // for multi-tab sync
+    window.addEventListener("storage", handleUserUpdate); // sync across tabs
 
     return () => {
       window.removeEventListener("userUpdated", handleUserUpdate);
@@ -88,20 +88,24 @@ const Navbar = () => {
     };
   }, []);
 
+  // Select a city
   const handleCitySelect = (city) => {
     setSelectedCity(city);
     localStorage.setItem("selectedCity", city);
     setShowLocationModal(false);
   };
 
+  // Logout user
   const handleLogout = () => {
     localStorage.removeItem("eventhubUser");
-    window.dispatchEvent(new Event("userUpdated")); // 🔔 notify all listeners
+    window.dispatchEvent(new Event("userUpdated")); // notify all listeners
     setUser(null);
     setShowProfileDropdown(false);
-    navigate("/");
+    setShowMobileProfile(false);
+    navigate("/login");
   };
 
+  // Search handler
   const handleSearch = (e) => {
     e.preventDefault();
     if (!searchQuery.trim()) return;
@@ -112,13 +116,13 @@ const Navbar = () => {
   return (
     <>
       <nav className="navbar">
-        {/* === LEFT SIDE === */}
+        {/* LEFT SIDE */}
         <div className="navbar-left">
           <div className="logo" onClick={() => navigate("/")}>
             <span className="logo-highlight">Event</span>Hub
           </div>
 
-          {/* Location Selector (Desktop only) */}
+          {/* Desktop location selector */}
           <div
             className="location desktop-only"
             onClick={() => setShowLocationModal(true)}
@@ -129,9 +133,9 @@ const Navbar = () => {
           </div>
         </div>
 
-        {/* === RIGHT SIDE === */}
+        {/* RIGHT SIDE */}
         <div className="navbar-right">
-          {/* Search Bar (Desktop Only) */}
+          {/* Desktop search bar */}
           <form className="search-bar desktop-only" onSubmit={handleSearch}>
             <FaSearch className="search-icon" />
             <input
@@ -143,7 +147,7 @@ const Navbar = () => {
             />
           </form>
 
-          {/* Login or Profile (Desktop) */}
+          {/* Desktop login/profile */}
           {!user ? (
             <button
               className="login-btn desktop-only"
@@ -171,10 +175,7 @@ const Navbar = () => {
                     Profile
                   </button>
                   <hr className="dropdown-divider" />
-                  <button
-                    className="dropdown-item logout"
-                    onClick={handleLogout}
-                  >
+                  <button className="dropdown-item logout" onClick={handleLogout}>
                     Logout
                   </button>
                 </div>
@@ -182,7 +183,7 @@ const Navbar = () => {
             </div>
           )}
 
-          {/* === MOBILE ICONS === */}
+          {/* MOBILE ICONS */}
           <div className="mobile-icons">
             <FaMapMarkerAlt
               className="mobile-icon"
@@ -221,10 +222,7 @@ const Navbar = () => {
                       Profile
                     </button>
                     <hr className="dropdown-divider" />
-                    <button
-                      className="dropdown-item logout"
-                      onClick={handleLogout}
-                    >
+                    <button className="dropdown-item logout" onClick={handleLogout}>
                       Logout
                     </button>
                   </div>
@@ -235,7 +233,7 @@ const Navbar = () => {
         </div>
       </nav>
 
-      {/* === POPUPS === */}
+      {/* POPUPS */}
       {(showSearchModal || showLocationModal) && (
         <div
           className="popup-backdrop"
@@ -291,3 +289,4 @@ const Navbar = () => {
 };
 
 export default Navbar;
+  

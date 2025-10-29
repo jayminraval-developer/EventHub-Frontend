@@ -27,7 +27,7 @@ function App() {
           />
         </Routes>
 
-        <Footer /> {/* Footer visible on all pages */}
+        <Footer />
       </div>
     </Router>
   );
