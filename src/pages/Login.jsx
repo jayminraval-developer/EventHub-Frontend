@@ -12,6 +12,7 @@ function Login() {
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
+  // 🧠 If already logged in, redirect to home
   useEffect(() => {
     const savedUser = localStorage.getItem("eventhubUser");
     if (savedUser) navigate("/");
@@ -28,7 +29,7 @@ function Login() {
     else {
       if (password.length < 7)
         newErrors.password = "Password must be at least 7 characters long";
-      const hasSpecial = /[!@#$%^&*(),.?\":{}|<>]/.test(password);
+      const hasSpecial = /[!@#$%^&*(),.?":{}|<>]/.test(password);
       const hasNumbers = (password.match(/\d/g) || []).length >= 2;
       if (!hasSpecial || !hasNumbers)
         newErrors.password =
@@ -49,7 +50,14 @@ function Login() {
         "https://eventhub-backend-mveb.onrender.com/api/user/login",
         { email, password }
       );
+
+      // 🧠 Save user in localStorage
       localStorage.setItem("eventhubUser", JSON.stringify(data));
+
+      // 🔔 Tell Navbar and other components user has changed
+      window.dispatchEvent(new Event("userUpdated"));
+
+      // ✅ Redirect to home
       navigate("/");
     } catch (error) {
       setErrors({ api: error.response?.data?.message || "Login failed" });
@@ -65,7 +73,9 @@ function Login() {
           <FaUserCircle />
         </div>
         <h3>Welcome back 👋</h3>
-        <p>Please sign in to continue to <span>EventHub</span></p>
+        <p>
+          Please sign in to continue to <span>EventHub</span>
+        </p>
 
         <form onSubmit={handleLogin} autoComplete="off">
           <div className="input-group">
