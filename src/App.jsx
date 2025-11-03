@@ -1,6 +1,8 @@
+// src/App.jsx
 import React from "react";
 import { BrowserRouter as Router, Routes, Route, useLocation } from "react-router-dom";
 import Home from "./pages/Home";
+import EventListing from "./pages/EventListing";
 import Login from "./pages/Login";
 import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
@@ -8,27 +10,22 @@ import ProtectedRoute from "./components/ProtectedRoute";
 
 const AppLayout = ({ children }) => {
   const location = useLocation();
-  // Hide navbar on login page
-  const hideNavbar = location.pathname === "/login";
+  const hideNavbarFooter = location.pathname === "/login";
 
   return (
     <div className="app-container">
-      {!hideNavbar && <Navbar />}
-      {children}
-      <Footer />
+      {!hideNavbarFooter && <Navbar />}
+      <main>{children}</main>
+      {!hideNavbarFooter && <Footer />}
     </div>
   );
 };
 
-function App() {
+const App = () => {
   return (
     <Router>
       <AppLayout>
         <Routes>
-          {/* Public route */}
-          <Route path="/login" element={<Login />} />
-
-          {/* Protected route */}
           <Route
             path="/"
             element={
@@ -37,10 +34,19 @@ function App() {
               </ProtectedRoute>
             }
           />
+          <Route
+            path="/events"
+            element={
+              <ProtectedRoute>
+                <EventListing />
+              </ProtectedRoute>
+            }
+          />
+          <Route path="/login" element={<Login />} />
         </Routes>
       </AppLayout>
     </Router>
   );
-}
+};
 
 export default App;
