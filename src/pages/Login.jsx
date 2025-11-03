@@ -19,11 +19,19 @@ function Login() {
     if (savedUser) navigate("/");
   }, [navigate]);
 
+  // Detect device info
+  const getDeviceInfo = () => {
+    const ua = navigator.userAgent;
+    const browser = ua.match(/(firefox|msie|chrome|safari|trident)/i)?.[0] || "Unknown";
+    const os = ua.match(/(Windows|Mac|Linux|Android|iPhone)/i)?.[0] || "Unknown";
+    return `${browser}-${os}`;
+  };
+
   // Validate email and password
   const validate = () => {
     const newErrors = {};
     if (!email) newErrors.email = "Email is required";
-    else if (!/^[\w.-]+@gmail\.com$/i.test(email))
+    else if (!/^[\\w.-]+@gmail\\.com$/i.test(email))
       newErrors.email = "Email must end with @gmail.com";
 
     if (!password) newErrors.password = "Password is required";
@@ -31,10 +39,9 @@ function Login() {
       if (password.length < 7)
         newErrors.password = "Password must be at least 7 characters long";
       const hasSpecial = /[!@#$%^&*(),.?":{}|<>]/.test(password);
-      const hasNumbers = (password.match(/\d/g) || []).length >= 2;
+      const hasNumbers = (password.match(/\\d/g) || []).length >= 2;
       if (!hasSpecial || !hasNumbers)
-        newErrors.password =
-          "Password must include 1 special character & 2 numbers";
+        newErrors.password = "Password must include 1 special character & 2 numbers";
     }
 
     setErrors(newErrors);
@@ -46,28 +53,35 @@ function Login() {
     e.preventDefault();
     if (!validate()) return;
 
-    setLoading(true); // show spinner
+    setLoading(true);
 
     try {
+      const deviceInfo = getDeviceInfo();
       const { data } = await axios.post(
         "https://eventhub-backend-mveb.onrender.com/api/user/login",
-        { email, password }
+        { email, password, deviceInfo }
       );
 
-      // Save user locally
+      // Save user & device info
       localStorage.setItem("eventhubUser", JSON.stringify(data));
+      localStorage.setItem("token", data.token);
+      localStorage.setItem("deviceToken", data.deviceToken);
 
       // Notify other components
       window.dispatchEvent(new Event("userUpdated"));
 
-      // Redirect to home
+      // Redirect
       navigate("/");
     } catch (error) {
-      setErrors({
-        api: error.response?.data?.message || "Login failed. Try again.",
-      });
+      const message = error.response?.data?.message || "Login failed. Try again.";
+
+      if (message.includes("already logged in on another device")) {
+        alert("⚠️ You are already logged in on another device. Please logout from there first.");
+      }
+
+      setErrors({ api: message });
     } finally {
-      setLoading(false); // hide spinner
+      setLoading(false);
     }
   };
 
