@@ -1,4 +1,3 @@
-// src/pages/Login.jsx
 import React, { useState, useEffect } from "react";
 import "../styles/Login.css";
 import axios from "axios";
@@ -27,22 +26,15 @@ function Login() {
     return `${browser}-${os}`;
   };
 
-  // Validate email and password
+  // ✅ Simplified Validation
   const validate = () => {
     const newErrors = {};
+
     if (!email) newErrors.email = "Email is required";
-    else if (!/^[\\w.-]+@gmail\\.com$/i.test(email))
-      newErrors.email = "Email must end with @gmail.com";
+    else if (!/^[\w.-]+@[a-zA-Z\d.-]+\.[a-zA-Z]{2,}$/i.test(email))
+      newErrors.email = "Invalid email format";
 
     if (!password) newErrors.password = "Password is required";
-    else {
-      if (password.length < 7)
-        newErrors.password = "Password must be at least 7 characters long";
-      const hasSpecial = /[!@#$%^&*(),.?":{}|<>]/.test(password);
-      const hasNumbers = (password.match(/\\d/g) || []).length >= 2;
-      if (!hasSpecial || !hasNumbers)
-        newErrors.password = "Password must include 1 special character & 2 numbers";
-    }
 
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
