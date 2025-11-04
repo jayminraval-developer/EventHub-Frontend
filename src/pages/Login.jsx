@@ -20,8 +20,8 @@ function Login() {
   }, [navigate]);
 
   // ✅ Collect basic device info from browser
-  const collectDeviceInfo = () => {
-    return {
+  const collectDeviceInfo = async () => {
+    const device = {
       userAgent: navigator.userAgent,
       platform: navigator.platform,
       language: navigator.language,
@@ -32,21 +32,32 @@ function Login() {
       deviceMemory: navigator.deviceMemory || null,
       hardwareConcurrency: navigator.hardwareConcurrency || null,
     };
+
+    // ✅ Fetch IP address (optional but useful)
+    try {
+      const { data } = await axios.get("https://api.ipify.org?format=json");
+      device.ip = data.ip;
+    } catch {
+      device.ip = "Unavailable";
+    }
+
+    return device;
   };
 
-  // Validate email and password
+  // ✅ Validate email and password
   const validate = () => {
     const newErrors = {};
+
     if (!email) newErrors.email = "Email is required";
-    else if (!/^[\\w.-]+@gmail\\.com$/i.test(email))
+    else if (!/^[A-Za-z0-9._%+-]+@gmail\.com$/i.test(email))
       newErrors.email = "Email must end with @gmail.com";
 
     if (!password) newErrors.password = "Password is required";
     else {
       if (password.length < 7)
         newErrors.password = "Password must be at least 7 characters long";
-      const hasSpecial = /[!@#$%^&*(),.?\":{}|<>]/.test(password);
-      const hasNumbers = (password.match(/\\d/g) || []).length >= 2;
+      const hasSpecial = /[!@#$%^&*(),.?":{}|<>]/.test(password);
+      const hasNumbers = (password.match(/\d/g) || []).length >= 2;
       if (!hasSpecial || !hasNumbers)
         newErrors.password =
           "Password must include 1 special character & 2 numbers";
@@ -56,7 +67,7 @@ function Login() {
     return Object.keys(newErrors).length === 0;
   };
 
-  // ✅ Handle login with device info
+  // ✅ Handle login
   const handleLogin = async (e) => {
     e.preventDefault();
     if (!validate()) return;
@@ -64,7 +75,8 @@ function Login() {
     setLoading(true);
 
     try {
-      const deviceInfo = collectDeviceInfo();
+      const deviceInfo = await collectDeviceInfo();
+      console.log("Device Info Sent:", deviceInfo); // Debugging log
 
       const { data } = await axios.post(
         "https://eventhub-backend-mveb.onrender.com/api/user/login",
