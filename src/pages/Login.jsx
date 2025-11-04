@@ -105,17 +105,19 @@ function Login() {
   };
 
   // ✅ Logout from all devices
-  const handleLogoutAllDevices = async () => {
-    try {
-      await axios.post("https://eventhub-backend-mveb.onrender.com/api/user/logoutAll", {
-        email,
-      });
-      alert("Logged out from all devices. Please login again.");
-      setShowConflictPopup(false);
-    } catch (error) {
-      alert("Failed to logout from all devices.");
-    }
-  };
+const handleLogoutAllDevices = async () => {
+  try {
+    await axios.post("https://eventhub-backend-mveb.onrender.com/api/user/logout-all", {
+      email,
+    });
+    localStorage.removeItem("eventhubUser");
+    alert("Logged out from all devices. Please login again.");
+    setShowConflictPopup(false);
+  } catch (error) {
+    alert("Failed to logout from all devices.");
+  }
+};
+
 
   return (
     <div className="login-wrapper">
