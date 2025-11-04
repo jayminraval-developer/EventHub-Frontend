@@ -4,6 +4,7 @@ import "../styles/Login.css";
 import axios from "axios";
 import { FaEye, FaEyeSlash, FaUserCircle } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
+import crypto from "crypto-js";
 
 function Login() {
   const [email, setEmail] = useState("");
@@ -11,15 +12,23 @@ function Login() {
   const [showPassword, setShowPassword] = useState(false);
   const [errors, setErrors] = useState({});
   const [loading, setLoading] = useState(false);
+  const [showConflictPopup, setShowConflictPopup] = useState(false);
   const navigate = useNavigate();
 
-  // Redirect if user already logged in
   useEffect(() => {
     const savedUser = localStorage.getItem("eventhubUser");
     if (savedUser) navigate("/");
   }, [navigate]);
 
-  // ✅ Collect basic device info from browser
+  const getDeviceToken = () => {
+    let token = localStorage.getItem("deviceToken");
+    if (!token) {
+      token = crypto.lib.WordArray.random(16).toString();
+      localStorage.setItem("deviceToken", token);
+    }
+    return token;
+  };
+
   const collectDeviceInfo = async () => {
     const device = {
       userAgent: navigator.userAgent,
@@ -33,7 +42,6 @@ function Login() {
       hardwareConcurrency: navigator.hardwareConcurrency || null,
     };
 
-    // ✅ Fetch IP address (optional but useful)
     try {
       const { data } = await axios.get("https://api.ipify.org?format=json");
       device.ip = data.ip;
@@ -41,10 +49,10 @@ function Login() {
       device.ip = "Unavailable";
     }
 
+    device.deviceToken = getDeviceToken();
     return device;
   };
 
-  // ✅ Validate email and password
   const validate = () => {
     const newErrors = {};
 
@@ -67,36 +75,45 @@ function Login() {
     return Object.keys(newErrors).length === 0;
   };
 
-  // ✅ Handle login
   const handleLogin = async (e) => {
     e.preventDefault();
     if (!validate()) return;
-
     setLoading(true);
 
     try {
       const deviceInfo = await collectDeviceInfo();
-      console.log("Device Info Sent:", deviceInfo); // Debugging log
-
       const { data } = await axios.post(
         "https://eventhub-backend-mveb.onrender.com/api/user/login",
         { email, password, deviceInfo }
       );
 
-      // Save user locally
       localStorage.setItem("eventhubUser", JSON.stringify(data));
-
-      // Notify other components
       window.dispatchEvent(new Event("userUpdated"));
-
-      // Redirect to home
       navigate("/");
     } catch (error) {
-      setErrors({
-        api: error.response?.data?.message || "Login failed. Try again.",
-      });
+      const message =
+        error.response?.data?.message || "Login failed. Try again.";
+      setErrors({ api: message });
+
+      // ✅ Detect multiple login conflict
+      if (message.includes("already logged in on another device")) {
+        setShowConflictPopup(true);
+      }
     } finally {
       setLoading(false);
+    }
+  };
+
+  // ✅ Logout from all devices
+  const handleLogoutAllDevices = async () => {
+    try {
+      await axios.post("https://eventhub-backend-mveb.onrender.com/api/user/logoutAll", {
+        email,
+      });
+      alert("Logged out from all devices. Please login again.");
+      setShowConflictPopup(false);
+    } catch (error) {
+      alert("Failed to logout from all devices.");
     }
   };
 
@@ -112,7 +129,6 @@ function Login() {
         </p>
 
         <form onSubmit={handleLogin} autoComplete="off">
-          {/* Email */}
           <div className="input-group">
             <input
               type="email"
@@ -124,7 +140,6 @@ function Login() {
           </div>
           {errors.email && <span className="error">{errors.email}</span>}
 
-          {/* Password */}
           <div className="input-group">
             <input
               type={showPassword ? "text" : "password"}
@@ -143,13 +158,11 @@ function Login() {
           {errors.password && <span className="error">{errors.password}</span>}
           {errors.api && <span className="error">{errors.api}</span>}
 
-          {/* Login Button */}
           <button type="submit" className="login-btn" disabled={loading}>
             {loading ? "Logging in..." : "Sign In"}
           </button>
         </form>
 
-        {/* Social Login */}
         <div className="social-login">
           <p className="or">OR CONTINUE WITH</p>
           <div className="social-icons">
@@ -166,6 +179,30 @@ function Login() {
           </a>
         </p>
       </div>
+
+      {/* ✅ Custom Popup for multi-device login conflict */}
+      {showConflictPopup && (
+        <div className="popup-overlay">
+          <div className="popup">
+            <h4>⚠️ Already Logged In</h4>
+            <p>
+              You are already logged in on another device.  
+              Would you like to logout from all devices?
+            </p>
+            <div className="popup-buttons">
+              <button className="logout-all" onClick={handleLogoutAllDevices}>
+                Logout All Devices
+              </button>
+              <button
+                className="cancel"
+                onClick={() => setShowConflictPopup(false)}
+              >
+                Cancel
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
