@@ -5,10 +5,10 @@ import Login from "./pages/Login";
 import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
 import ProtectedRoute from "./components/ProtectedRoute";
+import Profile from "./pages/Profile/Profile";   // <-- ADD THIS
 
 const AppLayout = ({ children }) => {
   const location = useLocation();
-  // Hide navbar on login page
   const hideNavbar = location.pathname === "/login";
 
   return (
@@ -25,10 +25,8 @@ function App() {
     <Router>
       <AppLayout>
         <Routes>
-          {/* Public route */}
           <Route path="/login" element={<Login />} />
 
-          {/* Protected route */}
           <Route
             path="/"
             element={
@@ -37,6 +35,17 @@ function App() {
               </ProtectedRoute>
             }
           />
+
+          {/* ✅ ADD THIS NEW ROUTE */}
+          <Route
+            path="/profile"
+            element={
+              <ProtectedRoute>
+                <Profile />
+              </ProtectedRoute>
+            }
+          />
+
         </Routes>
       </AppLayout>
     </Router>

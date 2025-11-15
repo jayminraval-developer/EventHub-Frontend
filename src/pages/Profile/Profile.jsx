@@ -1,0 +1,7 @@
+// src/pages/Profile/Profile.jsx
+import React from "react";
+import ProfilePage from "./ProfilePage";
+
+export default function Profile() {
+  return <ProfilePage />;
+}

@@ -1,292 +1,180 @@
-// src/components/Navbar.jsx
 import React, { useState, useEffect, useRef } from "react";
 import {
   FaMapMarkerAlt,
   FaSearch,
   FaChevronDown,
-  FaTimes,
   FaUserCircle,
 } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 import "../styles/Navbar.css";
 
+const CITIES = [
+  "Ahmedabad",
+  "Surat",
+  "Palanpur",
+  "Mehsana",
+  "Gandhinagar",
+  "Rajkot",
+];
+
 const Navbar = () => {
-  const [showSearchModal, setShowSearchModal] = useState(false);
-  const [showLocationModal, setShowLocationModal] = useState(false);
-  const [showMobileProfile, setShowMobileProfile] = useState(false);
-  const [selectedCity, setSelectedCity] = useState("Ahmedabad");
-  const [showProfileDropdown, setShowProfileDropdown] = useState(false);
-  const [searchQuery, setSearchQuery] = useState("");
-  const [user, setUser] = useState(null);
-
-  const dropdownRef = useRef(null);
-  const mobileProfileRef = useRef(null);
   const navigate = useNavigate();
-  const cities = ["Ahmedabad", "Surat", "Vadodara", "Rajkot", "Gandhinagar"];
 
-  // Scroll effect for navbar
+  const [user, setUser] = useState(null);
+  const [search, setSearch] = useState("");
+  const [selectedCity, setSelectedCity] = useState("Ahmedabad");
+  const [showCityDropdown, setShowCityDropdown] = useState(false);
+  const [showProfileDropdown, setShowProfileDropdown] = useState(false);
+
+  const locationRef = useRef(null);
+  const profileRef = useRef(null);
+
   useEffect(() => {
-    const handleScroll = () => {
-      const navbar = document.querySelector(".navbar");
-      if (window.scrollY > 20) navbar.classList.add("scrolled");
-      else navbar.classList.remove("scrolled");
-    };
-    window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
+    const savedUser = JSON.parse(localStorage.getItem("eventhubUser"));
+    setUser(savedUser || null);
+
+    const savedCity = localStorage.getItem("ehCity");
+    if (savedCity) setSelectedCity(savedCity);
   }, []);
 
-  // Handle outside clicks for dropdowns
   useEffect(() => {
-    const handleClickOutside = (e) => {
+    const handleClickOutside = (event) => {
       if (
-        dropdownRef.current &&
-        !dropdownRef.current.contains(e.target) &&
-        mobileProfileRef.current &&
-        !mobileProfileRef.current.contains(e.target)
+        locationRef.current &&
+        !locationRef.current.contains(event.target)
       ) {
+        setShowCityDropdown(false);
+      }
+
+      if (profileRef.current && !profileRef.current.contains(event.target)) {
         setShowProfileDropdown(false);
-        setShowMobileProfile(false);
       }
     };
+
     document.addEventListener("click", handleClickOutside);
     return () => document.removeEventListener("click", handleClickOutside);
   }, []);
 
-  // Disable body scroll when modals are open
-  useEffect(() => {
-    document.body.classList.toggle(
-      "no-scroll",
-      showSearchModal || showLocationModal
-    );
-  }, [showSearchModal, showLocationModal]);
+  const handleSearchSubmit = (e) => {
+    e.preventDefault();
+    if (!search.trim()) return;
 
-  // Load user and selected city from localStorage on mount
-  useEffect(() => {
-    try {
-      const savedUser = JSON.parse(localStorage.getItem("eventhubUser"));
-      if (savedUser) setUser(savedUser);
-    } catch {
-      localStorage.removeItem("eventhubUser");
-    }
-    const savedCity = localStorage.getItem("selectedCity");
-    if (savedCity) setSelectedCity(savedCity);
-  }, []);
-
-  // Listen for user login/logout changes dynamically
-  useEffect(() => {
-    const handleUserUpdate = () => {
-      const savedUser = JSON.parse(localStorage.getItem("eventhubUser"));
-      setUser(savedUser || null);
-    };
-
-    window.addEventListener("userUpdated", handleUserUpdate);
-    window.addEventListener("storage", handleUserUpdate); // sync across tabs
-
-    return () => {
-      window.removeEventListener("userUpdated", handleUserUpdate);
-      window.removeEventListener("storage", handleUserUpdate);
-    };
-  }, []);
-
-  // Select a city
-  const handleCitySelect = (city) => {
-    setSelectedCity(city);
-    localStorage.setItem("selectedCity", city);
-    setShowLocationModal(false);
+    navigate(`/search?query=${encodeURIComponent(search)}`);
+    setSearch("");
   };
 
-  // Logout user
+  const handleCitySelect = (city) => {
+    setSelectedCity(city);
+    localStorage.setItem("ehCity", city);
+    setShowCityDropdown(false);
+  };
+
   const handleLogout = () => {
     localStorage.removeItem("eventhubUser");
-    window.dispatchEvent(new Event("userUpdated")); // notify all listeners
     setUser(null);
-    setShowProfileDropdown(false);
-    setShowMobileProfile(false);
     navigate("/login");
   };
 
-  // Search handler
-  const handleSearch = (e) => {
-    e.preventDefault();
-    if (!searchQuery.trim()) return;
-    setShowSearchModal(false);
-    navigate(`/search?query=${encodeURIComponent(searchQuery)}`);
-  };
-
   return (
-    <>
-      <nav className="navbar">
-        {/* LEFT SIDE */}
-        <div className="navbar-left">
-          <div className="logo" onClick={() => navigate("/")}>
-            <span className="logo-highlight">Event</span>Hub
-          </div>
+    <nav className="eh-navbar">
 
-          {/* Desktop location selector */}
-          <div
-            className="location desktop-only"
-            onClick={() => setShowLocationModal(true)}
-          >
-            <FaMapMarkerAlt className="location-icon" />
-            <span className="location-text">{selectedCity}</span>
-            <FaChevronDown className="chevron-icon" />
-          </div>
+      {/* LEFT */}
+      <div className="eh-left">
+        <div className="eh-logo" onClick={() => navigate("/")}>
+          <span className="eh-logo-accent">Event</span>Hub
         </div>
 
-        {/* RIGHT SIDE */}
-        <div className="navbar-right">
-          {/* Desktop search bar */}
-          <form className="search-bar desktop-only" onSubmit={handleSearch}>
-            <FaSearch className="search-icon" />
-            <input
-              type="text"
-              placeholder="Search events..."
-              className="search-input"
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-            />
-          </form>
+        <div
+          className="eh-location desktop-only"
+          ref={locationRef}
+          onClick={() => setShowCityDropdown((prev) => !prev)}
+        >
+          <FaMapMarkerAlt />
+          <span>{selectedCity}</span>
+          <FaChevronDown />
 
-          {/* Desktop login/profile */}
-          {!user ? (
-            <button
-              className="login-btn desktop-only"
-              onClick={() => navigate("/login")}
-            >
-              Login
-            </button>
-          ) : (
-            <div className="profile-container desktop-only" ref={dropdownRef}>
-              <button
-                className="login-btn profile-btn"
-                onClick={() => setShowProfileDropdown((p) => !p)}
-              >
-                <FaUserCircle className="profile-icon" />
-                <span className="profile-name">{user.name || "User"}</span>
-                <FaChevronDown className="dropdown-arrow" />
-              </button>
-
-              {showProfileDropdown && (
-                <div className="profile-dropdown">
-                  <button
-                    className="dropdown-item"
-                    onClick={() => navigate("/profile")}
-                  >
-                    Profile
-                  </button>
-                  <hr className="dropdown-divider" />
-                  <button className="dropdown-item logout" onClick={handleLogout}>
-                    Logout
-                  </button>
+          {showCityDropdown && (
+            <div className="eh-location-dropdown">
+              {CITIES.map((city) => (
+                <div
+                  key={city}
+                  className={`eh-location-option ${
+                    selectedCity === city ? "active" : ""
+                  }`}
+                  onClick={() => handleCitySelect(city)}
+                >
+                  {city}
                 </div>
-              )}
+              ))}
             </div>
           )}
-
-          {/* MOBILE ICONS */}
-          <div className="mobile-icons">
-            <FaMapMarkerAlt
-              className="mobile-icon"
-              onClick={() => {
-                setShowLocationModal(true);
-                setShowSearchModal(false);
-              }}
-            />
-            <FaSearch
-              className="mobile-icon"
-              onClick={() => {
-                setShowSearchModal(true);
-                setShowLocationModal(false);
-              }}
-            />
-            {!user ? (
-              <FaUserCircle
-                className="mobile-icon"
-                onClick={() => navigate("/login")}
-              />
-            ) : (
-              <div className="mobile-profile-wrapper" ref={mobileProfileRef}>
-                <FaUserCircle
-                  className="mobile-icon"
-                  onClick={() => setShowMobileProfile((prev) => !prev)}
-                />
-                {showMobileProfile && (
-                  <div className="mobile-profile-dropdown">
-                    <button
-                      className="dropdown-item"
-                      onClick={() => {
-                        navigate("/profile");
-                        setShowMobileProfile(false);
-                      }}
-                    >
-                      Profile
-                    </button>
-                    <hr className="dropdown-divider" />
-                    <button className="dropdown-item logout" onClick={handleLogout}>
-                      Logout
-                    </button>
-                  </div>
-                )}
-              </div>
-            )}
-          </div>
         </div>
-      </nav>
+      </div>
 
-      {/* POPUPS */}
-      {(showSearchModal || showLocationModal) && (
-        <div
-          className="popup-backdrop"
-          onClick={() => {
-            setShowSearchModal(false);
-            setShowLocationModal(false);
-          }}
-        >
-          <div className="popup-modal" onClick={(e) => e.stopPropagation()}>
-            <div className="popup-close">
-              <FaTimes
-                onClick={() => {
-                  setShowSearchModal(false);
-                  setShowLocationModal(false);
-                }}
-              />
+      {/* CENTER */}
+      <div className="eh-center desktop-only">
+        <form className="eh-search" onSubmit={handleSearchSubmit}>
+          <FaSearch className="eh-search-icon" />
+          <input
+            type="text"
+            placeholder="Search events…"
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            className="eh-search-input"
+          />
+        </form>
+      </div>
+
+      {/* RIGHT */}
+      <div className="eh-right desktop-only" ref={profileRef}>
+        {!user ? (
+          <button className="eh-login-btn" onClick={() => navigate("/login")}>
+            Login
+          </button>
+        ) : (
+          <div
+            className="eh-profile-btn"
+            onClick={() => setShowProfileDropdown((prev) => !prev)}
+            onMouseEnter={() => setShowProfileDropdown(true)}
+          >
+            <FaUserCircle className="eh-profile-icon" />
+            <span>{user.name}</span>
+            <FaChevronDown />
+          </div>
+        )}
+
+        {showProfileDropdown && user && (
+          <div className="eh-profile-dropdown">
+            <div
+              className="eh-dropdown-item"
+              onClick={() => navigate("/profile")}
+            >
+              Profile
             </div>
-
-            {showSearchModal && (
-              <form className="popup-body" onSubmit={handleSearch}>
-                <FaSearch className="popup-icon" />
-                <input
-                  type="text"
-                  className="popup-input"
-                  placeholder="Search events..."
-                  autoFocus
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                />
-              </form>
-            )}
-
-            {showLocationModal && (
-              <div className="popup-body">
-                {cities.map((city) => (
-                  <div
-                    key={city}
-                    className={`popup-option ${
-                      city === selectedCity ? "selected" : ""
-                    }`}
-                    onClick={() => handleCitySelect(city)}
-                  >
-                    {city}
-                  </div>
-                ))}
-              </div>
-            )}
+            <div className="eh-dropdown-item logout" onClick={handleLogout}>
+              Logout
+            </div>
           </div>
-        </div>
-      )}
-    </>
+        )}
+      </div>
+
+      {/* MOBILE ICON BAR */}
+      <div className="eh-mobile-icons mobile-only">
+        <FaMapMarkerAlt
+          className="eh-mobile-icon"
+          onClick={() => alert("Static City: " + selectedCity)}
+        />
+        <FaSearch
+          className="eh-mobile-icon"
+          onClick={() => navigate("/search")}
+        />
+        <FaUserCircle
+          className="eh-mobile-icon"
+          onClick={() => navigate(user ? "/profile" : "/login")}
+        />
+      </div>
+    </nav>
   );
 };
 
 export default Navbar;
-  

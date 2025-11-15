@@ -1,0 +1,15 @@
+:root {
+  --bg: #f8fafc;
+  --card: #ffffff;
+  --text: #0f172a;
+  --muted: #64748b;
+  --primary: #0ea5a4;
+  --radius: 12px;
+  --gap: 16px;
+}
+
+/* layout helpers */
+.container { max-width: 1200px; margin: 0 auto; padding: 24px; }
+.card { background: var(--card); border-radius: var(--radius); padding: 16px; box-shadow: 0 6px 18px rgba(16,24,40,0.06); }
+.profile-grid { display: grid; gap: var(--gap); grid-template-columns: 1fr 320px; }
+@media (max-width: 1024px) { .profile-grid { grid-template-columns: 1fr; } }
