@@ -20,6 +20,7 @@ function Login() {
     if (savedUser) navigate("/");
   }, [navigate]);
 
+  // Generate consistent deviceToken
   const getDeviceToken = () => {
     let token = localStorage.getItem("deviceToken");
     if (!token) {
@@ -29,6 +30,7 @@ function Login() {
     return token;
   };
 
+  // Collect device info (KEEP your original logic)
   const collectDeviceInfo = async () => {
     const device = {
       userAgent: navigator.userAgent,
@@ -53,6 +55,7 @@ function Login() {
     return device;
   };
 
+  // Validation
   const validate = () => {
     const newErrors = {};
 
@@ -75,6 +78,7 @@ function Login() {
     return Object.keys(newErrors).length === 0;
   };
 
+  // LOGIN HANDLER — FIXED
   const handleLogin = async (e) => {
     e.preventDefault();
     if (!validate()) return;
@@ -82,11 +86,17 @@ function Login() {
 
     try {
       const deviceInfo = await collectDeviceInfo();
+      const deviceToken = deviceInfo.deviceToken; // Backend expects only token
+
       const { data } = await axios.post(
         "https://eventhub-backend-mveb.onrender.com/api/user/login",
-        { email, password, deviceInfo }
+        { email, password, deviceToken }
       );
 
+      // SAVE full deviceInfo (OPTIONAL)
+      localStorage.setItem("deviceInfo", JSON.stringify(deviceInfo));
+
+      // SAVE login data
       localStorage.setItem("eventhubUser", JSON.stringify(data));
       window.dispatchEvent(new Event("userUpdated"));
       navigate("/");
@@ -95,8 +105,7 @@ function Login() {
         error.response?.data?.message || "Login failed. Try again.";
       setErrors({ api: message });
 
-      // ✅ Detect multiple login conflict
-      if (message.includes("already logged in on another device")) {
+      if (message.includes("already logged in")) {
         setShowConflictPopup(true);
       }
     } finally {
@@ -104,32 +113,38 @@ function Login() {
     }
   };
 
-  // ✅ Logout from all devices
-const handleLogoutAllDevices = async () => {
-  try {
-    await axios.post("https://eventhub-backend-mveb.onrender.com/api/user/logout-all", {
-      email,
-    });
-    localStorage.removeItem("eventhubUser");
-    alert("Logged out from all devices. Please login again.");
-    setShowConflictPopup(false);
-  } catch (error) {
-    alert("Failed to logout from all devices.");
-  }
-};
+  // LOGOUT ALL DEVICES
+  const handleLogoutAllDevices = async () => {
+    try {
+      const saved = JSON.parse(localStorage.getItem("eventhubUser"));
 
+      await axios.post(
+        "https://eventhub-backend-mveb.onrender.com/api/user/logout-all",
+        { email: saved?.email || email }
+      );
+
+      localStorage.removeItem("eventhubUser");
+      alert("Logged out from all devices. Please login again.");
+      setShowConflictPopup(false);
+    } catch {
+      alert("Failed to logout from all devices.");
+    }
+  };
 
   return (
     <div className="login-wrapper">
       <div className="login-container">
+
         <div className="login-icon">
           <FaUserCircle />
         </div>
+
         <h3>Welcome back 👋</h3>
         <p>
           Please sign in to continue to <span>EventHub</span>
         </p>
 
+        {/* LOGIN FORM */}
         <form onSubmit={handleLogin} autoComplete="off">
           <div className="input-group">
             <input
@@ -151,8 +166,8 @@ const handleLogoutAllDevices = async () => {
               autoComplete="new-password"
             />
             <span
-              onClick={() => setShowPassword(!showPassword)}
               className="toggle-eye"
+              onClick={() => setShowPassword(!showPassword)}
             >
               {showPassword ? <FaEyeSlash /> : <FaEye />}
             </span>
@@ -165,6 +180,7 @@ const handleLogoutAllDevices = async () => {
           </button>
         </form>
 
+        {/* SOCIAL LOGIN UI (KEPT 100%) */}
         <div className="social-login">
           <p className="or">OR CONTINUE WITH</p>
           <div className="social-icons">
@@ -182,13 +198,13 @@ const handleLogoutAllDevices = async () => {
         </p>
       </div>
 
-      {/* ✅ Custom Popup for multi-device login conflict */}
+      {/* MULTI-DEVICE LOGIN POPUP */}
       {showConflictPopup && (
         <div className="popup-overlay">
           <div className="popup">
             <h4>⚠️ Already Logged In</h4>
             <p>
-              You are already logged in on another device.  
+              You are already logged in on another device.
               Would you like to logout from all devices?
             </p>
             <div className="popup-buttons">
@@ -205,6 +221,7 @@ const handleLogoutAllDevices = async () => {
           </div>
         </div>
       )}
+
     </div>
   );
 }
