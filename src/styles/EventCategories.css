@@ -2,12 +2,12 @@ body, html, #root {
   background-color: #fff !important;
   color: #222;
   margin: 0;
-  padding: 0;
+  padding: 0 0 0 0;
 }
 
 
 .event-categories {
-  padding: 20px 10px;
+  padding: 0 0 20px 10px;
   max-width: 1000px;
   margin: 0 auto;
   user-select: none;

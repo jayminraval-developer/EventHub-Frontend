@@ -130,14 +130,16 @@ const Home = () => {
         </div>
       </section>
 
+      {/* Event Categories */}
+      <EventCategories />
+
       {/* Featured Events */}
       <section className="featured-section">
         {/* <h2 className="section-title">Featured Events</h2> */}
         <HomeEvents city={selectedCity} />
       </section>
 
-      {/* Event Categories */}
-      <EventCategories />
+      
 
       {/* Organizer Call to Action */}
       <section className="organizer-cta">
